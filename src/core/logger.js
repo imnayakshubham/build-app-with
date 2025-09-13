@@ -4,7 +4,7 @@
 
 import chalk from 'chalk';
 import ora from 'ora';
-
+chalk.gray
 class Logger {
     constructor() {
         this.spinner = null;
@@ -49,7 +49,10 @@ class Logger {
     }
 
     logCommand(command) {
-        console.log(chalk.gray('$'), chalk.dim(command));
+        const gray = chalk.gray ?? ((str) => str);
+        const dim = chalk.dim ?? ((str) => str);
+
+        console.log(gray('$'), dim(command));
     }
 }
 
