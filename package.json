@@ -1,11 +1,11 @@
 {
-  "name": "new-react-app",
+  "name": "create-new-app",
   "version": "2.0.0",
   "description": "Production-grade CLI tool to create modern web applications with Next.js, Vite, Express, and Fastify",
   "main": "index.js",
   "type": "module",
   "bin": {
-    "new-react-app": "./bin/cli.js"
+    "create-new-app": "./bin/cli.js"
   },
   "scripts": {
     "start": "node ./bin/cli.js",
@@ -38,12 +38,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/your-username/new-react-app.git"
+    "url": "https://github.com/your-username/create-new-app.git"
   },
   "bugs": {
-    "url": "https://github.com/your-username/new-react-app/issues"
+    "url": "https://github.com/your-username/create-new-app/issues"
   },
-  "homepage": "https://github.com/your-username/new-react-app#readme",
+  "homepage": "https://github.com/your-username/create-new-app#readme",
   "dependencies": {
     "chalk": "^5.6.0",
     "execa": "^9.6.0",

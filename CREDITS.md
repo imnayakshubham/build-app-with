@@ -331,12 +331,6 @@ This project is licensed under the MIT License. We respect and acknowledge all t
 
 We welcome contributions from the community! If you'd like to contribute to this project, please see our [Contributing Guide](CONTRIBUTING.md).
 
-## 📞 Contact
-
-- **Email**: credits@new-react-app.com
-- **GitHub**: [@new-react-app](https://github.com/your-username/new-react-app)
-- **Twitter**: [@newreactapp](https://twitter.com/newreactapp)
-
 ---
 
 **Thank you to all the amazing developers, teams, and communities that make modern web development possible! 🙏**

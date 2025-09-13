@@ -45,20 +45,20 @@ A powerful CLI tool that generates production-ready applications with modern fra
 
 ```bash
 # Install globally
-npm install -g new-react-app
+npm install -g create-new-app
 
 # Or use with npx
-npx new-react-app my-awesome-app
+npx create-new-app my-awesome-app
 ```
 
 ### Usage
 
 ```bash
 # Start the interactive CLI
-new-react-app
+create-new-app
 
 # Or specify project name directly
-new-react-app my-project
+create-new-app my-project
 ```
 
 ## 📁 Project Structure
@@ -193,7 +193,7 @@ We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) f
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/new-react-app.git
+git clone https://github.com/your-username/create-new-app.git
 
 # Install dependencies
 npm install
@@ -219,9 +219,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Support
 
-- 📧 Email: support@new-react-app.com
-- 🐛 Issues: [GitHub Issues](https://github.com/your-username/new-react-app/issues)
-- 💬 Discussions: [GitHub Discussions](https://github.com/your-username/new-react-app/discussions)
+- 🐛 Issues: [GitHub Issues](https://github.com/imnayakshubham/create-new-app/issues)
+- 💬 Discussions: [GitHub Discussions](https://github.com/imnayakshubham/create-new-app/discussions)
 
 ## 🚀 Roadmap
 
@@ -236,6 +235,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-**Made with ❤️ by the New React App Team**
+**Made with ❤️ by the [Create New App](https://github.com/imnayakshubham/create-new-app)**
 
 *Generate production-ready applications in seconds, not hours.*

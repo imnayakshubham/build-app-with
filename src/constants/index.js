@@ -1,6 +1,6 @@
-const APP_NAME = "new-react-app";
-const NPM_URL = "https://www.npmjs.com/package/new-react-app";
-const GITHUB_URL = "https://github.com/your-username/new-react-app";
+const APP_NAME = "create-new-app";
+const NPM_URL = "https://www.npmjs.com/package/create-new-app";
+const GITHUB_URL = "https://github.com/your-username/create-new-app";
 
 
 const containerStyle = {
