@@ -1,0 +1,16 @@
+export default {
+    presets: [
+        [
+            '@babel/preset-env',
+            {
+                targets: {
+                    node: '18'
+                },
+                modules: false
+            }
+        ]
+    ],
+    plugins: [
+        '@babel/plugin-transform-modules-commonjs'
+    ]
+};
