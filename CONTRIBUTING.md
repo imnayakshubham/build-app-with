@@ -46,13 +46,13 @@ Examples of behavior that contributes to creating a positive environment include
 1. Fork the repository on GitHub
 2. Clone your fork locally:
    ```bash
-   git clone https://github.com/your-username/create-new-app.git
-   cd create-new-app
+   git clone https://github.com/imnayakshubham/create-app-with.git
+   cd create-app-with
    ```
 
 3. Add the upstream repository:
    ```bash
-   git remote add upstream https://github.com/original-username/create-new-app.git
+   git remote add upstream https://github.com/imnayakshubham/create-app-with.git
    ```
 
 ## 🛠️ Development Setup

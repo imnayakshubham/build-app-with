@@ -45,20 +45,20 @@ A powerful CLI tool that generates production-ready applications with modern fra
 
 ```bash
 # Install globally
-npm install -g create-new-app
+npm install -g create-app-with
 
 # Or use with npx
-npx create-new-app my-awesome-app
+npx create-app-with my-awesome-app
 ```
 
 ### Usage
 
 ```bash
 # Start the interactive CLI
-create-new-app
+create-app-with
 
 # Or specify project name directly
-create-new-app my-project
+create-app-with my-project
 ```
 
 ## 📁 Project Structure
@@ -193,7 +193,7 @@ We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) f
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/create-new-app.git
+git clone https://github.com/imnayakshubham/create-app-with.git
 
 # Install dependencies
 npm install
@@ -219,8 +219,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Support
 
-- 🐛 Issues: [GitHub Issues](https://github.com/imnayakshubham/create-new-app/issues)
-- 💬 Discussions: [GitHub Discussions](https://github.com/imnayakshubham/create-new-app/discussions)
+- 🐛 Issues: [GitHub Issues](https://github.com/imnayakshubham/create-app-with/issues)
+- 💬 Discussions: [GitHub Discussions](https://github.com/imnayakshubham/create-app-with/discussions)
 
 ## 🚀 Roadmap
 
@@ -235,6 +235,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-**Made with ❤️ by the [Create New App](https://github.com/imnayakshubham/create-new-app)**
+**Made with ❤️ by the [Create New App](https://github.com/imnayakshubham/create-app-with)**
 
 *Generate production-ready applications in seconds, not hours.*
