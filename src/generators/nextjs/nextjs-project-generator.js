@@ -4,8 +4,8 @@ import { execa } from 'execa';
 import ora from 'ora';
 import inquirer from 'inquirer';
 import chalk from 'chalk';
-import { getFeaturePrompts, getPrompts, postSetupPrompts, finalizeAnswers } from '../prompts/index.js';
-import { creditString } from '../constants/index.js';
+import { getFeaturePrompts, getPrompts, postSetupPrompts, finalizeAnswers } from '../../prompts/index.js';
+import { creditString } from '../../constants/index.js';
 import { generateCreditsSection, generateReactCreditsComponent } from '../../utils/credits.js';
 
 // Centralized feature to npm package mapping for dependencies and devDependencies
@@ -39,10 +39,13 @@ const cssFrameworkPackages = {
 
 // Entry function to generate and customize Next.js project
 export async function generateNextJSProject(projectPath, rawAnswers) {
-  const spinner = ora('Setting up Next.js project...').start();
+  const spinner = ora({
+    text: 'Setting up Next.js project...',
+    discardStdin: false
+  }).start();
 
   try {
-    const answers = finalizeAnswers(rawAnswers);
+    let answers = finalizeAnswers(rawAnswers);
 
     const createNextAppArgs = ['create-next-app@latest', answers.projectName];
 
@@ -92,14 +95,17 @@ export async function generateNextJSProject(projectPath, rawAnswers) {
       answers.nextThemes = enableNextThemes;
     }
 
-    const customizingSpinner = ora('Customizing Next.js project...').start();
+    const customizingSpinner = ora({
+      text: 'Customizing Next.js project...',
+      discardStdin: false
+    }).start();
+
 
     console.log('Running create-next-app with arguments:', createNextAppArgs.join(' '));
 
     await customizeNextJSProject(createNextAppArgs, projectPath, answers);
 
     customizingSpinner.succeed('Next.js project created and customized!');
-
     // Stop spinner before prompting
     ora().stop();
 
@@ -181,7 +187,10 @@ export async function customizeNextJSProject(createNextAppArgs, projectPath, ans
   await fs.writeJSON(pkgPath, pkgJson, { spaces: 2 });
 
   // Install dependencies with spinner
-  const spinner = ora('Installing dependencies...').start();
+  const spinner = ora({
+    text: 'Installing dependencies...',
+    discardStdin: false
+  }).start();
   try {
     await execa('npm', ['install'], { cwd: projectPath, stdio: 'inherit' });
     spinner.succeed('Dependencies installed successfully!');
@@ -204,6 +213,9 @@ export async function customizeNextJSProject(createNextAppArgs, projectPath, ans
 
   // Generate credits component
   await generateCreditsComponent(projectPath, answers);
+
+  // Update README with credits
+  await updateReadmeWithCredits(projectPath, answers);
 
   // Add extra feature-specific config/files
   await addNextJSFeatures(projectPath, answers);
@@ -828,6 +840,37 @@ async function generateCreditsComponent(projectPath, answers) {
 
   const creditsComponent = generateReactCreditsComponent('nextjs', allFeatures);
   await fs.writeFile(path.join(componentsDir, 'Credits.tsx'), creditsComponent);
+}
+
+// Update README with credits
+async function updateReadmeWithCredits(projectPath, answers) {
+  const readmePath = path.join(projectPath, 'README.md');
+
+  if (await fs.pathExists(readmePath)) {
+    let readmeContent = await fs.readFile(readmePath, 'utf8');
+
+    // Check if credits are already added
+    if (!readmeContent.includes('## 🙏 Credits & How This App Was Created')) {
+      const selectedFeatures = Array.isArray(answers.selectedFeatures) ? answers.selectedFeatures : [];
+      const allFeatures = [...selectedFeatures];
+      if (answers.authStrategy && answers.authStrategy !== 'none') {
+        allFeatures.push(answers.authStrategy);
+      }
+      if (answers.typescript) {
+        allFeatures.push('typescript');
+      }
+      if (answers.cssFramework) {
+        allFeatures.push(answers.cssFramework);
+      }
+
+      const credits = generateCreditsSection('nextjs', allFeatures);
+
+      // Add credits before the last line
+      readmeContent = readmeContent.trim() + '\n\n' + credits;
+
+      await fs.writeFile(readmePath, readmeContent);
+    }
+  }
 }
 
 async function locateGlobalsCss(projectPath, isAppRouter) {

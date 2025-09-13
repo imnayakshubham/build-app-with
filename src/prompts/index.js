@@ -32,20 +32,8 @@ export function getFeaturePrompts(currentAnswers) {
                 return answers.setupType === 'customize' || answers.allowCustomFeatures || answers.selectedFeatures < 1
             }
         },
-        {
-            type: 'checkbox',
-            name: 'dataFetching',
-            message: 'Select Data Fetching features:',
-            choices: [
-                { name: 'TanStack Query (Data Fetching)', value: 'tanstack-query' },
-                { name: 'Axios (HTTP Client)', value: 'axios' },
-                { name: 'Axios with Interceptor', value: 'axios-interceptor' }
-            ],
-            when: (default_answers) => {
-                const answers = default_answers ?? currentAnswers
-                return answers.setupType === 'customize' || answers.allowCustomFeatures
-            },
-        },
+        // Data fetching is automatically included for React apps
+        // TanStack Query and Axios with Interceptor are added by default
         {
             type: 'checkbox',
             name: 'forms',

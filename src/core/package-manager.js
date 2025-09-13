@@ -73,7 +73,13 @@ export class PackageManager {
             logger.logCommand(command.join(' '));
             await execa(command[0], command.slice(1), {
                 cwd: projectPath,
-                stdio: 'inherit'
+                stdio: 'pipe',
+                timeout: 300000, // 5 minutes timeout
+                env: {
+                    ...process.env,
+                    NODE_ENV: 'production',
+                    CI: 'true' // Prevent interactive prompts
+                }
             });
         } catch (error) {
             throw new DependencyError(

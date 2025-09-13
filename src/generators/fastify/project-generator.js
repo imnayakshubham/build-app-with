@@ -45,26 +45,48 @@ export async function generateFastifyProject(projectPath, answers) {
                 break;
         }
 
-        // Generate configuration files
-        await generateConfig(projectPath, answers);
 
         // Generate database models if needed
         if (answers.database !== 'none') {
-            await generateModels(projectPath, answers);
+            const modelsContent = generateModels(projectPath, answers);
+            await fs.ensureDir(path.join(projectPath, 'src', 'models'));
+            await fs.writeFile(path.join(projectPath, 'src', 'models', 'index.js'), modelsContent);
         }
 
         // Generate additional files
-        await generatePlugins(projectPath, answers);
-        await generateRoutes(projectPath, answers);
+        const pluginsContent = generatePlugins(projectPath, answers);
+        const routesContent = generateRoutes(projectPath, answers);
+        const configContent = generateConfig(projectPath, answers);
+        const servicesContent = generateServices(projectPath, answers);
+
+        // Write plugin files
+        await fs.ensureDir(path.join(projectPath, 'src', 'plugins'));
+        await fs.writeFile(path.join(projectPath, 'src', 'plugins', 'error-handler.js'), pluginsContent);
+
+        // Write routes files
+        await fs.ensureDir(path.join(projectPath, 'src', 'routes'));
+        await fs.writeFile(path.join(projectPath, 'src', 'routes', 'index.js'), routesContent);
+
+        // Write config files
+        await fs.ensureDir(path.join(projectPath, 'src', 'config'));
+        await fs.writeFile(path.join(projectPath, 'src', 'config', 'index.js'), configContent);
+
+        // Write services files
+        await fs.ensureDir(path.join(projectPath, 'src', 'services'));
+        await fs.writeFile(path.join(projectPath, 'src', 'services', 'index.js'), servicesContent);
 
         // Generate tests if requested
         if (answers.includeTests) {
-            await generateTests(projectPath, answers);
+            const testsContent = generateTests(projectPath, answers);
+            await fs.ensureDir(path.join(projectPath, 'tests'));
+            await fs.writeFile(path.join(projectPath, 'tests', 'app.test.js'), testsContent);
         }
 
         // Generate Docker files if requested
         if (answers.includeDocker) {
-            await generateDocker(projectPath, answers);
+            const { dockerfile, dockerCompose } = generateDocker(projectPath, answers);
+            await fs.writeFile(path.join(projectPath, 'Dockerfile'), dockerfile);
+            await fs.writeFile(path.join(projectPath, 'docker-compose.yml'), dockerCompose);
         }
 
         // Generate README
@@ -76,12 +98,13 @@ export async function generateFastifyProject(projectPath, answers) {
         // Generate .env.example
         await generateEnvExample(projectPath, answers);
 
-        spinner.succeed('Project structure generated successfully!');
+    spinner.succeed('Project structure generated successfully!');
 
-        // Install dependencies
-        const installSpinner = logger.startSpinner('Installing dependencies...');
-        await installDependencies(projectPath, answers);
-        installSpinner.succeed('Dependencies installed successfully!');
+    // Skip dependency installation for now - let user install manually
+    logger.info('Project structure created! Next steps:');
+    logger.info(`  cd ${path.basename(projectPath)}`);
+    logger.info('  npm install');
+    logger.info('  npm run dev');
 
     } catch (error) {
         spinner.fail('Failed to generate project structure');

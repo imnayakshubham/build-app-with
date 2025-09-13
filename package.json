@@ -48,7 +48,7 @@
     "chalk": "^5.6.0",
     "execa": "^9.6.0",
     "fs-extra": "^11.3.1",
-    "inquirer": "^12.9.3",
+    "inquirer": "^8.2.6",
     "ora": "^8.2.0"
   },
   "devDependencies": {

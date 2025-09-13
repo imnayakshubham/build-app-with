@@ -35,13 +35,12 @@ export async function createApp() {
     const isBackend = ['express', 'fastify'].includes(answers.framework);
 
     // Create project directory only when we manage files ourselves
-    let spinner;
     if (!isNext) {
-      spinner = ora('Creating project structure...').start();
+      console.log("Creating project directory:", projectPath);
       await fs.ensureDir(projectPath);
+      console.log("Project directory created successfully");
     }
 
-    console.log(answers)
     // Generate project files based on framework choice
     if (answers.framework === 'vite-react') {
       await generateViteProject(projectPath, answers);
@@ -53,9 +52,7 @@ export async function createApp() {
       await generateFastifyApp(projectPath, answers);
     }
 
-    if (spinner) {
-      spinner.succeed('Project structure created!');
-    }
+    console.log('Project structure created successfully!');
 
     // Ensure .gitignore exists and includes env files
     const gitignorePath = path.join(projectPath, '.gitignore');

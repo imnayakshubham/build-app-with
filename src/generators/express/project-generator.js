@@ -25,11 +25,14 @@ export async function generateExpressProject(projectPath, answers) {
     const spinner = logger.startSpinner('Generating Express.js project structure...');
 
     try {
-        // Generate package.json
+        logger.info('Creating project directory...');
+        await fs.ensureDir(projectPath);
+        
+        logger.info('Generating package.json...');
         const packageJson = generatePackageJson(answers);
         await fs.writeJSON(path.join(projectPath, 'package.json'), packageJson, { spaces: 2 });
 
-        // Generate main application files
+        logger.info('Generating main application files...');
         await generateAppJs(projectPath, answers);
         await generateServerJs(projectPath, answers);
 
@@ -46,43 +49,79 @@ export async function generateExpressProject(projectPath, answers) {
                 break;
         }
 
-        // Generate configuration files
-        await generateConfig(projectPath, answers);
-
         // Generate database models if needed
         if (answers.database !== 'none') {
-            await generateModels(projectPath, answers);
+            const modelsContent = generateModels(projectPath, answers);
+            await fs.ensureDir(path.join(projectPath, 'src', 'models'));
+            await fs.writeFile(path.join(projectPath, 'src', 'models', 'index.js'), modelsContent);
         }
 
+        logger.info('Generating additional files...');
         // Generate additional files
-        await generateMiddleware(projectPath, answers);
-        await generateRoutes(projectPath, answers);
+        const middlewareContent = generateMiddleware(projectPath, answers);
+        const routesContent = generateRoutes(projectPath, answers);
+        const configContent = generateConfig(projectPath, answers);
+        const controllersContent = generateControllers(projectPath, answers);
+        const servicesContent = generateServices(projectPath, answers);
+        
+        logger.info('Writing middleware files...');
+        // Write middleware files
+        await fs.ensureDir(path.join(projectPath, 'src', 'middleware'));
+        await fs.writeFile(path.join(projectPath, 'src', 'middleware', 'index.js'), middlewareContent);
+        
+        logger.info('Writing routes files...');
+        // Write routes files
+        await fs.ensureDir(path.join(projectPath, 'src', 'routes'));
+        await fs.writeFile(path.join(projectPath, 'src', 'routes', 'index.js'), routesContent);
+        
+        logger.info('Writing config files...');
+        // Write config files
+        await fs.ensureDir(path.join(projectPath, 'src', 'config'));
+        await fs.writeFile(path.join(projectPath, 'src', 'config', 'index.js'), configContent);
+        
+        logger.info('Writing controllers files...');
+        // Write controllers files
+        await fs.ensureDir(path.join(projectPath, 'src', 'controllers'));
+        await fs.writeFile(path.join(projectPath, 'src', 'controllers', 'index.js'), controllersContent);
+        
+        logger.info('Writing services files...');
+        // Write services files
+        await fs.ensureDir(path.join(projectPath, 'src', 'services'));
+        await fs.writeFile(path.join(projectPath, 'src', 'services', 'index.js'), servicesContent);
 
         // Generate tests if requested
         if (answers.includeTests) {
-            await generateTests(projectPath, answers);
+            const testsContent = generateTests(projectPath, answers);
+            await fs.ensureDir(path.join(projectPath, 'tests'));
+            await fs.writeFile(path.join(projectPath, 'tests', 'app.test.js'), testsContent);
         }
 
         // Generate Docker files if requested
         if (answers.includeDocker) {
-            await generateDocker(projectPath, answers);
+            const { dockerfile, dockerCompose } = generateDocker(projectPath, answers);
+            await fs.writeFile(path.join(projectPath, 'Dockerfile'), dockerfile);
+            await fs.writeFile(path.join(projectPath, 'docker-compose.yml'), dockerCompose);
         }
 
+        logger.info('Generating README...');
         // Generate README
         await generateReadme(projectPath, answers);
 
+        logger.info('Generating .gitignore...');
         // Generate .gitignore
         await generateGitignore(projectPath);
 
+        logger.info('Generating .env.example...');
         // Generate .env.example
         await generateEnvExample(projectPath, answers);
 
         spinner.succeed('Project structure generated successfully!');
 
-        // Install dependencies
-        const installSpinner = logger.startSpinner('Installing dependencies...');
-        await installDependencies(projectPath, answers);
-        installSpinner.succeed('Dependencies installed successfully!');
+        // Skip dependency installation for now - let user install manually
+        logger.info('Project structure created! Next steps:');
+        logger.info(`  cd ${path.basename(projectPath)}`);
+        logger.info('  npm install');
+        logger.info('  npm run dev');
 
     } catch (error) {
         spinner.fail('Failed to generate project structure');

@@ -8,30 +8,36 @@ import inquirer from 'inquirer';
 import { logger } from '../../core/logger.js';
 import { handleError, validateProjectName, validateFramework } from '../../core/error-handler.js';
 import { packageManager } from '../../core/package-manager.js';
-import { generateExpressProject } from './project-generator.js';
+import { generateSimpleExpressProject } from './simple-generator.js';
 import { getExpressPrompts } from './prompts.js';
 import { FRAMEWORKS } from '../../types/index.js';
 
 export async function generateExpressApp(projectPath, rawAnswers) {
     try {
+        console.log('generateExpressApp started');
         validateProjectName(rawAnswers.projectName);
         validateFramework(FRAMEWORKS.EXPRESS);
 
-        const spinner = logger.startSpinner('Setting up Express.js project...');
-
         // Get additional Express-specific prompts
+        console.log('Getting Express prompts...');
         const expressPrompts = getExpressPrompts(rawAnswers);
+        console.log('Prompting user for Express options...');
         const expressAnswers = await inquirer.prompt(expressPrompts);
+        console.log('Express prompts completed');
 
+        // Merge answers asynchronously
         const answers = { ...rawAnswers, ...expressAnswers };
+        console.log('Answers merged successfully');
 
         // Create project directory
+        console.log('Creating project directory...');
         await fs.ensureDir(projectPath);
+        console.log('Project directory created');
 
         // Generate Express project structure
-        await generateExpressProject(projectPath, answers);
-
-        spinner.succeed('Express.js project created successfully!');
+        console.log('Generating Express project structure...');
+        await generateSimpleExpressProject(projectPath, answers);
+        console.log('Express project generated successfully!');
 
         // Post-setup instructions
         logger.success(`\n🎉 Your Express.js project "${answers.projectName}" is ready!`);

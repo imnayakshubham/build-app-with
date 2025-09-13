@@ -74,6 +74,13 @@ export function generatePackageJson(answers) {
     }
   }
 
+  // Automatically add TanStack Query and Axios for React-based apps
+  if (answers.framework === 'vite-react' || answers.framework === 'nextjs') {
+    packageJson.dependencies['@tanstack/react-query'] = '^5.14.2';
+    packageJson.dependencies['axios'] = '^1.6.2';
+    packageJson.devDependencies['@tanstack/react-query-devtools'] = '^5.14.2';
+  }
+
   // Add feature dependencies
   (answers.features || []).forEach(feature => {
     switch (feature) {

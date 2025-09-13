@@ -27,7 +27,9 @@ class Logger {
     }
 
     startSpinner(message) {
-        this.spinner = ora(message).start();
+        this.spinner = ora({
+            text: message, discardStdin: false
+        }).start();
         return this.spinner;
     }
 

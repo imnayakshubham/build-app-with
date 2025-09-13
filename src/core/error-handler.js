@@ -2,6 +2,7 @@
  * Centralized error handling for the project generator
  */
 
+import chalk from 'chalk';
 import { logger } from './logger.js';
 
 export class ProjectGeneratorError extends Error {

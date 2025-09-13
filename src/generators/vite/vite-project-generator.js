@@ -1,6 +1,6 @@
 import fs from 'fs-extra';
 import path from 'path';
-import { generatePackageJson } from './package-json-generator.js';
+import { generatePackageJson } from '../package-json-generator.js';
 import { generateViteConfig } from './vite-config-generator.js';
 import { generateTailwindConfig } from './tailwind-config-generator.js';
 import { generateProjectFiles } from './file-generator.js';

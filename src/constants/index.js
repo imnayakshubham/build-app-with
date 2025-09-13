@@ -1,6 +1,7 @@
-const APP_NAME = "create-new-app";
-const NPM_URL = "https://www.npmjs.com/package/create-new-app";
-const GITHUB_URL = "https://github.com/your-username/create-new-app";
+export const APP_NAME = "create-new-app";
+export const NPM_URL = "https://www.npmjs.com/package/create-new-app";
+export const GITHUB_URL = "https://github.com/create-new-app/create-new-app";
+export const VERSION = "2.0.0";
 
 
 const containerStyle = {

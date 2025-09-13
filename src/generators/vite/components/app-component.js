@@ -2,6 +2,13 @@ export function generateAppComponent(answers) {
   const imports = [`import React from 'react'`];
   let componentContent = '';
 
+  // Automatically add API hooks for React-based apps
+  if (answers.framework === 'vite-react' || answers.framework === 'nextjs') {
+    const ext = answers.typescript ? 'ts' : 'js';
+    imports.push(`import { useApiQuery, useCreateItem } from './lib/use-api.${ext}'`);
+    imports.push(`import { api } from './lib/axios-config.${ext}'`);
+  }
+
   // Add feature-specific imports and content
   if (answers.features.includes('router')) {
     imports.push(`import { Routes, Route, Link } from 'react-router-dom'`);
@@ -56,12 +63,34 @@ export default App
 }
 
 function generateTailwindApp(answers) {
+  const apiExample = answers.framework === 'vite-react' || answers.framework === 'nextjs' ? `
+  // Example API usage with TanStack Query
+  const { data: posts, isLoading, error } = useApiQuery(
+    ['posts'],
+    '/posts',
+    { enabled: true }
+  );
+
+  const createPost = useCreateItem('/posts', {
+    onSuccess: () => {
+      console.log('Post created successfully!');
+    }
+  });
+
+  const handleCreatePost = () => {
+    createPost.mutate({
+      title: 'New Post',
+      content: 'This is a new post created with the API!'
+    });
+  };` : '';
+
   return `const features = [
   { icon: '⚡', title: 'Vite', description: 'Lightning fast build tool' },
   { icon: '⚛️', title: 'React', description: 'Modern UI library' },
   { icon: '🎨', title: 'Tailwind CSS', description: 'Utility-first CSS framework' },
+  ${answers.framework === 'vite-react' || answers.framework === 'nextjs' ? `{ icon: '🔗', title: 'TanStack Query', description: 'Powerful data fetching' },\n  { icon: '🌐', title: 'Axios', description: 'HTTP client with interceptors' },` : ''}
   ${answers.features.map(feature => `{ icon: '🔧', title: '${feature}', description: 'Additional feature' }`).join(',\n  ')}
-];`;
+];${apiExample}`;
 }
 
 function generateBootstrapApp(answers) {
@@ -146,7 +175,21 @@ function generateAppReturn(answers) {
         </div>
         
         <div className="text-center mt-8">
-          <p className="text-gray-600">Start building something amazing! 🚀</p>
+          <p className="text-gray-600 mb-4">Start building something amazing! 🚀</p>
+          ${answers.framework === 'vite-react' || answers.framework === 'nextjs' ? `
+          <div className="bg-blue-50 p-4 rounded-lg">
+            <h3 className="text-lg font-semibold text-blue-800 mb-2">API Ready!</h3>
+            <p className="text-blue-600 text-sm mb-3">
+              TanStack Query and Axios are configured and ready to use.
+            </p>
+            <button 
+              onClick={handleCreatePost}
+              disabled={createPost.isPending}
+              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-50"
+            >
+              {createPost.isPending ? 'Creating...' : 'Test API Call'}
+            </button>
+          </div>` : ''}
         </div>
       </div>
     </div>
