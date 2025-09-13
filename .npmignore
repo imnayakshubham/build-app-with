@@ -1,0 +1,49 @@
+# Ignore all tests
+__tests__/
+*.test.js
+*.test.ts
+*.spec.js
+*.spec.ts
+test/
+spec/
+tests/
+
+# Source maps for development (if you include dist already with maps, adjust)
+*.map
+
+# Local config / tooling
+.eslintrc.js
+eslint.config.js
+.prettierrc
+.prettierignore
+babel.config.js
+tsconfig.json
+
+# Dev dependencies / build scripts etc., if not needed in published package
+scripts/
+__scripts__/
+
+# Ignore coverage and logs
+coverage/
+.nyc_output/
+*.log
+
+# IDE/editor
+.vscode/
+.idea/
+
+# Environment vars / secrets
+.env
+.env.*.local
+
+# Other generated / local
+.cache/
+*.tgz
+
+# If you have source folder but only want to include compiled version
+/src/    # if you're shipping transpiled files in /dist or so
+!dist/
+!dist/**
+
+# Node modules will be automatically excluded
+node_modules/

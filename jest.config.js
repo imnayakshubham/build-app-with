@@ -66,7 +66,8 @@ export default {
     testPathIgnorePatterns: [
         '/node_modules/',
         '/dist/',
-        '/build/'
+        '/build/',
+        '/src/__tests__/setup.js' // ignore the setup file for now
     ],
 
     // Transform ignore patterns
