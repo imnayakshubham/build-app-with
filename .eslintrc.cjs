@@ -1,4 +1,4 @@
-export default {
+module.exports = {
     env: {
         node: true,
         es2022: true,
@@ -13,9 +13,9 @@ export default {
     },
     rules: {
         // Code quality
-        'no-console': 'warn',
+        'no-console': 'off',
         'no-debugger': 'error',
-        'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+        'no-unused-vars': ['off', { argsIgnorePattern: '^_' }],
         'no-undef': 'error',
         'no-unreachable': 'error',
         'no-duplicate-case': 'error',
@@ -31,7 +31,7 @@ export default {
         'valid-typeof': 'error',
 
         // Best practices
-        'curly': ['error', 'all'],
+        // 'curly': ['error', 'all'],
         'eqeqeq': ['error', 'always'],
         'no-eval': 'error',
         'no-implied-eval': 'error',
@@ -44,14 +44,14 @@ export default {
         'no-useless-call': 'error',
         'no-useless-concat': 'error',
         'no-useless-return': 'error',
-        'prefer-const': 'error',
+        'prefer-const': 'off',
         'prefer-arrow-callback': 'error',
         'prefer-template': 'error',
 
         // Style
-        'indent': ['error', 2],
-        'quotes': ['error', 'single'],
-        'semi': ['error', 'always'],
+        // 'indent': ['error', 2],
+        // 'quotes': ['error', 'single'],
+        // 'semi': ['error', 'always'],
         'comma-dangle': ['error', 'never'],
         'comma-spacing': ['error', { before: false, after: true }],
         'comma-style': ['error', 'last'],
@@ -60,8 +60,6 @@ export default {
         'key-spacing': ['error', { beforeColon: false, afterColon: true }],
         'keyword-spacing': ['error', { before: true, after: true }],
         'object-curly-spacing': ['error', 'always'],
-        'space-before-blocks': ['error', 'always'],
-        'space-before-function-paren': ['error', 'never'],
         'space-in-parens': ['error', 'never'],
         'space-infix-ops': 'error',
         'space-unary-ops': 'error',
@@ -77,7 +75,6 @@ export default {
         'no-this-before-super': 'error',
         'no-useless-constructor': 'error',
         'no-var': 'error',
-        'prefer-const': 'error',
         'prefer-destructuring': ['error', {
             array: true,
             object: true

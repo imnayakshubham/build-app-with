@@ -4,7 +4,6 @@
 
 import chalk from 'chalk';
 import ora from 'ora';
-chalk.gray
 class Logger {
     constructor() {
         this.spinner = null;

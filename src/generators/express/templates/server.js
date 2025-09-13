@@ -5,7 +5,7 @@
 import { DATABASES } from '../../../types/index.js';
 
 export function generateServerJs(projectPath, answers) {
-    let content = `import app from './app.js';
+  let content = `import app from './app.js';
 import { logger } from './utils/logger.js';
 import { connectDatabase } from './config/database.js';
 
@@ -55,5 +55,5 @@ process.on('SIGINT', () => {
 startServer();
 `;
 
-    return content;
+  return content;
 }

@@ -46,7 +46,7 @@ export default {
     setupFilesAfterEnv: ['<rootDir>/src/__tests__/setup.js'],
 
     // Module name mapping
-    moduleNameMapping: {
+    moduleNameMapper: {
         '^@/(.*)$': '<rootDir>/src/$1'
     },
 

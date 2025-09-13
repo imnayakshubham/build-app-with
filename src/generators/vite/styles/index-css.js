@@ -40,7 +40,7 @@ body {
 @tailwind components;
 @tailwind utilities;
 
-` + baseStyles;
+${baseStyles}`;
   }
 
   // Add custom styles based on CSS framework

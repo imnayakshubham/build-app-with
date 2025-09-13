@@ -2,12 +2,12 @@
  * Express.js project generator
  */
 
+
 import fs from 'fs-extra';
 import path from 'path';
 import inquirer from 'inquirer';
 import { logger } from '../../core/logger.js';
 import { handleError, validateProjectName, validateFramework } from '../../core/error-handler.js';
-import { packageManager } from '../../core/package-manager.js';
 import { generateSimpleExpressProject } from './simple-generator.js';
 import { getExpressPrompts } from './prompts.js';
 import { FRAMEWORKS } from '../../types/index.js';

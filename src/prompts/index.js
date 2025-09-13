@@ -25,7 +25,6 @@ export function getFeaturePrompts(currentAnswers) {
                 { name: 'MobX (State Management)', value: 'mobx' },
                 { name: 'Recoil (State Management)', value: 'recoil' }
             ],
-            default: "",
             default: [],
             when: (default_answers) => {
                 const answers = default_answers ?? currentAnswers
@@ -45,7 +44,7 @@ export function getFeaturePrompts(currentAnswers) {
             when: (default_answers) => {
                 const answers = default_answers ?? currentAnswers
                 return answers.setupType === 'customize' || answers.allowCustomFeatures
-            },
+            }
         },
         {
             type: 'checkbox',
@@ -59,7 +58,7 @@ export function getFeaturePrompts(currentAnswers) {
             when: (default_answers) => {
                 const answers = default_answers ?? currentAnswers
                 return answers.setupType === 'customize' || answers.allowCustomFeatures
-            },
+            }
         },
         {
             type: 'checkbox',
@@ -72,7 +71,7 @@ export function getFeaturePrompts(currentAnswers) {
             when: (default_answers) => {
                 const answers = default_answers ?? currentAnswers
                 return answers.setupType === 'customize' || answers.allowCustomFeatures
-            },
+            }
         },
         {
             type: 'checkbox',
@@ -84,13 +83,13 @@ export function getFeaturePrompts(currentAnswers) {
                 { name: 'Material-UI (MUI)', value: 'mui' },
                 { name: 'Chakra UI', value: 'chakra' },
                 { name: 'shadcn/ui', value: 'shadcn' },
-                { name: 'Mantine', value: 'mantine' },
+                { name: 'Mantine', value: 'mantine' }
             ],
 
             when: (default_answers) => {
                 const answers = default_answers ?? currentAnswers
                 return answers.setupType === 'customize' || answers.allowCustomFeatures
-            },
+            }
         },
         {
             type: 'checkbox',
@@ -109,7 +108,7 @@ export function getFeaturePrompts(currentAnswers) {
                 const answers = default_answers ?? currentAnswers
                 return answers.setupType === 'customize' || answers.allowCustomFeatures
             }
-        },
+        }
     ];
 }
 
@@ -157,7 +156,7 @@ export function getPrompts() {
             type: 'list',
             name: 'cssFramework',
             message: 'Choose a CSS framework:',
-            choices: (answer) => [
+            choices: () => [
                 { name: 'Tailwind CSS', value: 'tailwind' },
                 { name: 'Bootstrap', value: 'bootstrap' },
                 { name: 'Material-UI (MUI)', value: 'mui' },
@@ -228,7 +227,7 @@ export function getPrompts() {
             ],
             default: 0,
             when: () => false
-        },
+        }
         // 5. Final actions
 
     ];
@@ -243,7 +242,7 @@ export function finalizeAnswers(answers) {
 }
 
 
-export const postSetupPrompts = (answer) => {
+export const postSetupPrompts = () => {
     return [
         {
             type: 'checkbox',

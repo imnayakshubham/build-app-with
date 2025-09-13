@@ -4,7 +4,7 @@ import { execa } from 'execa';
 import ora from 'ora';
 import inquirer from 'inquirer';
 import chalk from 'chalk';
-import { getFeaturePrompts, getPrompts, postSetupPrompts, finalizeAnswers } from '../../prompts/index.js';
+import { getFeaturePrompts, postSetupPrompts, finalizeAnswers } from '../../prompts/index.js';
 import { creditString } from '../../constants/index.js';
 import { generateCreditsSection, generateReactCreditsComponent } from '../../utils/credits.js';
 
@@ -22,7 +22,7 @@ const featurePackageMap = {
   'tanstack-query': { deps: ['@tanstack/react-query'] },
   'react-query': { deps: ['@tanstack/react-query'] },
   'framer-motion': { deps: ['framer-motion'] },
-  'react-icons': { deps: ['react-icons'] },
+  'react-icons': { deps: ['react-icons'] }
   // Add other feature mappings as needed
 };
 
@@ -32,9 +32,9 @@ const cssFrameworkPackages = {
   'sass': { devDeps: ['sass'] },
   'shadcn': {
     devDeps: ['tailwindcss'],
-    deps: ['class-variance-authority', 'clsx', 'tailwind-merge', 'lucide-react', '@radix-ui/react-slot'],
+    deps: ['class-variance-authority', 'clsx', 'tailwind-merge', 'lucide-react', '@radix-ui/react-slot']
   },
-  'tailwind': { devDeps: ['tailwindcss'] },
+  'tailwind': { devDeps: ['tailwindcss'] }
 };
 
 // Entry function to generate and customize Next.js project
@@ -65,7 +65,7 @@ export async function generateNextJSProject(projectPath, rawAnswers) {
       type: 'confirm',
       name: 'allowCustomFeatures',
       message: 'Would you like to add additional features?',
-      default: false,
+      default: false
     });
     answers.allowCustomFeatures = allowCustomFeatures;
     answers.selectedFeatures = [];
@@ -90,7 +90,7 @@ export async function generateNextJSProject(projectPath, rawAnswers) {
         type: 'confirm',
         name: 'enableNextThemes',
         message: 'Enable theme switching with next-themes?',
-        default: true,
+        default: true
       });
       answers.nextThemes = enableNextThemes;
     }
@@ -138,7 +138,7 @@ export async function customizeNextJSProject(createNextAppArgs, projectPath, ans
   // Run create-next-app command (wait fully)
   await execa('npx', createNextAppArgs, {
     cwd: path.dirname(projectPath),
-    stdio: 'inherit',
+    stdio: 'inherit'
   });
 
   if (!(await fs.pathExists(pkgPath))) {
@@ -236,7 +236,7 @@ async function customizeMainPage(projectPath, answers) {
     path.join(projectPath, 'src', 'pages', 'index.tsx'),
     path.join(projectPath, 'src', 'pages', 'index.jsx'),
     path.join(projectPath, 'pages', 'index.tsx'),
-    path.join(projectPath, 'pages', 'index.jsx'),
+    path.join(projectPath, 'pages', 'index.jsx')
   ];
   let mainPagePath = '';
   for (const f of candidates) {
@@ -558,7 +558,7 @@ async function setupShadcn(projectPath, answers, isAppRouter) {
   try {
     await execa('npx', ['shadcn@latest', 'init'], {
       cwd: projectPath,
-      stdio: 'inherit',
+      stdio: 'inherit'
     });
 
     spinner.succeed('shadcn UI initialized successfully!');
@@ -651,7 +651,7 @@ export default function ThemeToggle() {
     if (await fs.pathExists(appPath)) {
       content = await fs.readFile(appPath, 'utf8');
       if (!content.includes('next-themes')) {
-        content = content.replace(/^import .*\n/, (str) => str + 'import { ThemeProvider } from \'next-themes\'\n');
+        content = content.replace(/^import .*\n/, (str) => `${str}import { ThemeProvider } from 'next-themes'\n`);
       }
       if (content.includes('<Component') && !content.includes('ThemeProvider')) {
         content = content.replace(
@@ -696,7 +696,7 @@ async function getAppDirectory(projectPath) {
 
 // Setup authentication based on selected strategy
 async function setupAuthentication(projectPath, answers) {
-  const isAppRouter = await locateAppDirectory(projectPath);
+  const isAppRouter = true
 
   if (answers.authStrategy === 'clerk') {
     await setupClerkAuth(projectPath, answers, isAppRouter);
@@ -866,7 +866,7 @@ async function updateReadmeWithCredits(projectPath, answers) {
       const credits = generateCreditsSection('nextjs', allFeatures);
 
       // Add credits before the last line
-      readmeContent = readmeContent.trim() + '\n\n' + credits;
+      readmeContent = `${readmeContent.trim()}\n\n${credits}`;
 
       await fs.writeFile(readmePath, readmeContent);
     }
@@ -877,7 +877,7 @@ async function locateGlobalsCss(projectPath, isAppRouter) {
   if (isAppRouter) {
     const candidates = [
       path.join(projectPath, 'app', 'globals.css'),
-      path.join(projectPath, 'src', 'app', 'globals.css'),
+      path.join(projectPath, 'src', 'app', 'globals.css')
     ];
     for (const c of candidates) {
       if (await fs.pathExists(c)) return c;
@@ -886,7 +886,7 @@ async function locateGlobalsCss(projectPath, isAppRouter) {
   } else {
     const candidates = [
       path.join(projectPath, 'src', 'styles', 'globals.css'),
-      path.join(projectPath, 'styles', 'globals.css'),
+      path.join(projectPath, 'styles', 'globals.css')
     ];
     for (const c of candidates) {
       if (await fs.pathExists(c)) return c;

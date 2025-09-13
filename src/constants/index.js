@@ -11,18 +11,18 @@ const containerStyle = {
   flexDirection: 'column',
   alignItems: 'center',
   backgroundColor: 'inherit',
-  margin: '1rem',
+  margin: '1rem'
 };
 
 const boxStyle = {
   marginBottom: '0.5em',
   border: '1px solid #ccc',
   padding: '1rem',
-  borderRadius: '8px',
+  borderRadius: '8px'
 };
 
 const headingStyle = {
-  marginBottom: '0.5em',
+  marginBottom: '0.5em'
 };
 
 

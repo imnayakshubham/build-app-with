@@ -5,7 +5,7 @@ export function generateESLintConfig(answers) {
     extends: [
       'eslint:recommended',
       ...(answers.typescript ? ['@typescript-eslint/recommended'] : []),
-      'plugin:react-hooks/recommended',
+      'plugin:react-hooks/recommended'
     ],
     ignorePatterns: ['dist', '.eslintrc.cjs'],
     parser: answers.typescript ? '@typescript-eslint/parser' : undefined,
@@ -13,8 +13,8 @@ export function generateESLintConfig(answers) {
     rules: {
       'react-refresh/only-export-components': [
         'warn',
-        { allowConstantExport: true },
-      ],
-    },
+        { allowConstantExport: true }
+      ]
+    }
   };
 }

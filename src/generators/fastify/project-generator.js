@@ -7,7 +7,7 @@ import path from 'path';
 import { logger } from '../../core/logger.js';
 import { packageManager } from '../../core/package-manager.js';
 import { featurePackageMap, frameworkBasePackages } from '../../config/package-mappings.js';
-import { FRAMEWORKS, FEATURES, DATABASES } from '../../types/index.js';
+import { FRAMEWORKS, FEATURES, DATABASES, AUTH_STRATEGIES } from '../../types/index.js';
 import { generatePackageJson } from './templates/package-json.js';
 import { generateAppJs } from './templates/app.js';
 import { generateServerJs } from './templates/server.js';
@@ -98,13 +98,13 @@ export async function generateFastifyProject(projectPath, answers) {
         // Generate .env.example
         await generateEnvExample(projectPath, answers);
 
-    spinner.succeed('Project structure generated successfully!');
+        spinner.succeed('Project structure generated successfully!');
 
-    // Skip dependency installation for now - let user install manually
-    logger.info('Project structure created! Next steps:');
-    logger.info(`  cd ${path.basename(projectPath)}`);
-    logger.info('  npm install');
-    logger.info('  npm run dev');
+        // Skip dependency installation for now - let user install manually
+        logger.info('Project structure created! Next steps:');
+        logger.info(`  cd ${path.basename(projectPath)}`);
+        logger.info('  npm install');
+        logger.info('  npm run dev');
 
     } catch (error) {
         spinner.fail('Failed to generate project structure');

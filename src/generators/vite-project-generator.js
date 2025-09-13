@@ -24,13 +24,13 @@ export async function generateViteProject(projectPath, answers) {
   }
 
   // Generate ESLint config if requested (ignored per user, leave gate)
-  if (false && answers.eslint) {
+  if (answers.eslint) {
     const eslintConfig = generateESLintConfig(answers);
     await fs.writeJSON(path.join(projectPath, '.eslintrc.json'), eslintConfig, { spaces: 2 });
   }
 
   // Generate Prettier config if requested (ignored per user)
-  if (false && answers.prettier) {
+  if (answers.prettier) {
     const prettierConfig = generatePrettierConfig();
     await fs.writeJSON(path.join(projectPath, '.prettierrc'), prettierConfig, { spaces: 2 });
   }

@@ -7,7 +7,7 @@ import path from 'path';
 import { logger } from '../../core/logger.js';
 import { packageManager } from '../../core/package-manager.js';
 import { featurePackageMap, frameworkBasePackages } from '../../config/package-mappings.js';
-import { FRAMEWORKS, FEATURES, DATABASES } from '../../types/index.js';
+import { FRAMEWORKS, FEATURES, DATABASES, AUTH_STRATEGIES } from '../../types/index.js';
 import { generatePackageJson } from './templates/package-json.js';
 import { generateAppJs } from './templates/app.js';
 import { generateServerJs } from './templates/server.js';
@@ -27,7 +27,7 @@ export async function generateExpressProject(projectPath, answers) {
     try {
         logger.info('Creating project directory...');
         await fs.ensureDir(projectPath);
-        
+
         logger.info('Generating package.json...');
         const packageJson = generatePackageJson(answers);
         await fs.writeJSON(path.join(projectPath, 'package.json'), packageJson, { spaces: 2 });
@@ -63,27 +63,27 @@ export async function generateExpressProject(projectPath, answers) {
         const configContent = generateConfig(projectPath, answers);
         const controllersContent = generateControllers(projectPath, answers);
         const servicesContent = generateServices(projectPath, answers);
-        
+
         logger.info('Writing middleware files...');
         // Write middleware files
         await fs.ensureDir(path.join(projectPath, 'src', 'middleware'));
         await fs.writeFile(path.join(projectPath, 'src', 'middleware', 'index.js'), middlewareContent);
-        
+
         logger.info('Writing routes files...');
         // Write routes files
         await fs.ensureDir(path.join(projectPath, 'src', 'routes'));
         await fs.writeFile(path.join(projectPath, 'src', 'routes', 'index.js'), routesContent);
-        
+
         logger.info('Writing config files...');
         // Write config files
         await fs.ensureDir(path.join(projectPath, 'src', 'config'));
         await fs.writeFile(path.join(projectPath, 'src', 'config', 'index.js'), configContent);
-        
+
         logger.info('Writing controllers files...');
         // Write controllers files
         await fs.ensureDir(path.join(projectPath, 'src', 'controllers'));
         await fs.writeFile(path.join(projectPath, 'src', 'controllers', 'index.js'), controllersContent);
-        
+
         logger.info('Writing services files...');
         // Write services files
         await fs.ensureDir(path.join(projectPath, 'src', 'services'));

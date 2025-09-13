@@ -8,8 +8,7 @@ import { logger } from '../../core/logger.js';
 import { generateCreditsSection } from '../../utils/credits.js';
 
 export async function generateSimpleExpressProject(projectPath, answers) {
-  console.log('generateSimpleExpressProject started');
-
+  let spinner = null
   try {
     // Create project directory first
     console.log('Creating project directory...');
@@ -17,7 +16,7 @@ export async function generateSimpleExpressProject(projectPath, answers) {
     console.log('Project directory created');
 
     // Start spinner after directory creation
-    const spinner = logger.startSpinner('Generating Express.js project structure...');
+    spinner = logger.startSpinner('Generating Express.js project structure...');
 
     logger.info('Generating package.json...');
     const packageJson = {

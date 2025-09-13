@@ -63,11 +63,11 @@ export async function createApp() {
       gitignoreContent = '# Node\nnode_modules/\n\n# Build\ndist/\nbuild/\n';
     }
     const envIgnores = ['.env', '.env.local', '.env.development.local', '.env.test.local', '.env.production.local'];
-    const updatedGitignore = gitignoreContent
+    const updatedGitignore = `${gitignoreContent
       .split('\n')
       .concat(envIgnores.filter((e) => !gitignoreContent.includes(e)))
       .join('\n')
-      .trim() + '\n';
+      .trim()}\n`;
     await fs.writeFile(gitignorePath, updatedGitignore);
 
     // Ensure .env exists

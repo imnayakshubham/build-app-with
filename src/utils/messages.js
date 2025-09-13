@@ -11,9 +11,9 @@ export function welcomeMessage() {
 }
 
 export function successMessage(projectName) {
-  console.log(chalk.green.bold('\n🎉 Project “' + projectName + '” created successfully!\n'));
+  console.log(chalk.green.bold(`\n🎉 Project “${projectName}” created successfully!\n`));
 
-  console.log('What’s next:');
+  console.log("What's next: ");
   console.log(chalk.cyan(`  cd ${projectName}`));
   console.log(chalk.cyan('  npm install     # Install project dependencies'));
   console.log(chalk.cyan('  npm run dev     # Start the development server'));

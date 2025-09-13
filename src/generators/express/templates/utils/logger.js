@@ -2,8 +2,8 @@
  * Winston logger configuration template
  */
 
-export function generateLogger() {
-    return `import winston from 'winston';
+export function generateLogger(answers) {
+  return `import winston from 'winston';
 
 const { combine, timestamp, errors, json, printf, colorize } = winston.format;
 

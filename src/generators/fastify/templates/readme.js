@@ -299,13 +299,13 @@ function generateEnvVars(answers) {
     const vars = [];
 
     if (answers.database === 'mongodb') {
-        vars.push('| `MONGODB_URI` | MongoDB connection string | `mongodb://localhost:27017/' + answers.projectName + '` |');
+        vars.push(`| \`MONGODB_URI\` | MongoDB connection string | \`mongodb://localhost:27017/${answers.projectName}\` |`);
     } else if (answers.database === 'postgresql' || answers.database === 'sqlite') {
         vars.push('| `DATABASE_URL` | Database connection string | `postgresql://...` |');
     } else if (answers.database === 'mysql') {
         vars.push('| `DB_HOST` | MySQL host | `localhost` |');
         vars.push('| `DB_PORT` | MySQL port | `3306` |');
-        vars.push('| `DB_NAME` | MySQL database name | `' + answers.projectName + '` |');
+        vars.push(`| \`DB_NAME\` | MySQL database name | \`${answers.projectName}\` |`);
         vars.push('| `DB_USER` | MySQL username | `root` |');
         vars.push('| `DB_PASSWORD` | MySQL password | `password` |');
     }
