@@ -78,7 +78,7 @@ export function calculateDependencies(answers) {
  * Get package versions - using latest stable for all packages
  * This ensures users always get the most current stable releases
  */
-export function getPackageVersion(packageName) {
+export function getPackageVersion() {
   // Always use latest stable version for all packages
   // This ensures compatibility and up-to-date features
   return 'latest';

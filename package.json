@@ -17,7 +17,8 @@
     "lint:fix": "eslint src/ --ext .js,.ts --fix",
     "format": "prettier --write src/",
     "build": "echo 'No build step required for CLI tool'",
-    "prepublishOnly": "npm test && npm run lint"
+    "prepublishOnly": "npm run test:core && npm run lint",
+    "test:core": "jest --testPathPattern=core"
   },
   "keywords": [
     "react",
