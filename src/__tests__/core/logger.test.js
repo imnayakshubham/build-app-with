@@ -33,7 +33,7 @@ describe('Logger', () => {
     describe('error', () => {
         it('should log error message', () => {
             logger.error('Test error message');
-            expect(console.log).toHaveBeenCalledWith('✗', 'Test error message');
+            expect(console.error).toHaveBeenCalledWith('✗', 'Test error message');
         });
     });
 
@@ -66,9 +66,28 @@ describe('Logger', () => {
     });
 
     describe('logCommand', () => {
-        it('should log command', () => {
+        it('should log command when isDevelopment is true', () => {
+            // Mock the logger's isDevelopment property
+            logger.isDevelopment = true;
+            logger.isQuiet = false;
+
             logger.logCommand('npm install');
+
+            // Check for chalk styled output
             expect(console.log).toHaveBeenCalledWith('$', 'npm install');
+        });
+
+        it('should not log command when not in development', () => {
+            jest.clearAllMocks();
+
+            // Mock the logger's isDevelopment property
+            logger.isDevelopment = false;
+            logger.isQuiet = false;
+
+            logger.logCommand('npm install');
+
+            // Should not have been called
+            expect(console.log).not.toHaveBeenCalled();
         });
     });
 });

@@ -5,7 +5,7 @@ const require = createRequire(import.meta.url);
 const { version } = require('../../package.json');
 
 export function welcomeMessage() {
-  console.log(chalk.blue.bold('🚀 Building something cool'));
+  console.log(chalk.blue.bold('🚀 Building something Great'));
   console.log(chalk.gray(`Version ${version}\n`));
   console.log('Create modern web apps with Next.js, Vite, Express, or Fastify + your choice of features.\n');
 }

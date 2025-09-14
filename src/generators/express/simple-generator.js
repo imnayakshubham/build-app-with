@@ -8,17 +8,13 @@ import { logger } from '../../core/logger.js';
 import { generateCreditsSection } from '../../utils/credits.js';
 
 export async function generateSimpleExpressProject(projectPath, answers) {
-  let spinner = null
   try {
     // Create project directory first
-    console.log('Creating project directory...');
+    logger.debug('Creating project directory...');
     await fs.ensureDir(projectPath);
-    console.log('Project directory created');
+    logger.debug('Project directory created');
 
-    // Start spinner after directory creation
-    spinner = logger.startSpinner('Generating Express.js project structure...');
-
-    logger.info('Generating package.json...');
+    logger.debug('Generating package.json...');
     const packageJson = {
       name: answers.projectName,
       version: '1.0.0',
@@ -265,7 +261,7 @@ ${credits}
 
     await fs.writeFile(path.join(projectPath, 'README.md'), readme);
 
-    spinner.succeed('Project structure generated successfully!');
+    logger.success('Project structure generated successfully!');
 
     logger.info('Project structure created! Next steps:');
     logger.info(`  cd ${path.basename(projectPath)}`);
@@ -273,7 +269,7 @@ ${credits}
     logger.info('  npm run dev');
 
   } catch (error) {
-    spinner.fail('Failed to generate project structure');
+    logger.error('Failed to generate project structure');
     throw error;
   }
 }

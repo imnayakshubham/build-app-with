@@ -1,25 +1,25 @@
-import ora from 'ora';
 import { execa } from 'execa';
-import chalk from 'chalk';
+import { logger } from '../core/logger.js';
 
 export async function installDependencies(projectPath, answers) {
   if (!Array.isArray(answers.postSetup) || !answers.postSetup.includes('install')) {
     return;
   }
 
-  const spinner = ora('Installing dependencies...').start();
+  logger.startSpinner('Installing dependencies...');
 
   try {
+    logger.debug(`Installing dependencies in ${projectPath}`);
     // Install dependencies
     await execa('npm', ['install'], {
       cwd: projectPath,
       stdio: 'pipe'
     });
 
-    spinner.succeed('Dependencies installed successfully!');
+    logger.stopSpinner(true, 'Dependencies installed successfully!');
   } catch (error) {
-    spinner.fail('Failed to install dependencies');
-    console.error(chalk.red('Error:'), error.message);
+    logger.stopSpinner(false, 'Failed to install dependencies');
+    logger.error(`Dependency installation error: ${error.message}`);
     throw error;
   }
 }

@@ -3,6 +3,7 @@
  */
 
 import { FEATURES, DATABASES } from '../../../types/index.js';
+import { hasFeature } from '../../../utils/answer-helpers.js';
 
 export function generateAppJs(projectPath, answers) {
     let content = `import Fastify from 'fastify';
@@ -84,7 +85,7 @@ const envSchema = {
     }
 
     // Add CORS environment variables
-    if (answers.features.includes(FEATURES.CORS)) {
+    if (answers.features && answers.features.includes(FEATURES.CORS)) {
         content += `    CORS_ORIGIN: {
       type: 'string',
       default: 'http://localhost:3000'
@@ -93,7 +94,7 @@ const envSchema = {
     }
 
     // Add rate limiting environment variables
-    if (answers.features.includes('rate-limit')) {
+    if (hasFeature(answers, 'rate-limit')) {
         content += `    RATE_LIMIT_MAX: {
       type: 'string',
       default: '100'
@@ -128,7 +129,7 @@ export async function buildApp() {
   await fastify.register(helmet);
 
   // Register CORS plugin
-  if (answers.features.includes('cors')) {
+  if (hasFeature(answers, 'cors')) {
     await fastify.register(cors, {
       origin: fastify.config.CORS_ORIGIN || 'http://localhost:3000',
       credentials: true

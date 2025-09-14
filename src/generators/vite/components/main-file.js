@@ -1,3 +1,5 @@
+import { hasFeature } from '../../../utils/answer-helpers.js';
+
 export function generateMainFile(answers) {
   const imports = [`import React from 'react'`, `import ReactDOM from 'react-dom/client'`];
   const appImport = `import App from './App.${answers.typescript ? 'tsx' : 'jsx'}'`;
@@ -13,7 +15,7 @@ export function generateMainFile(answers) {
   let providerWrappers = ['<App />'];
 
   // Add Redux provider if selected
-  if (answers.features.includes('redux')) {
+  if (hasFeature(answers, 'redux')) {
     imports.push(`import { Provider } from 'react-redux'`);
     imports.push(`import { store } from './store/store.${answers.typescript ? 'ts' : 'js'}'`);
     providerWrappers = [`<Provider store={store}>`, `  <App />`, `</Provider>`];
@@ -32,7 +34,7 @@ export function generateMainFile(answers) {
     }
   }
   // Legacy support for explicit react-query feature
-  else if (answers.features.includes('react-query')) {
+  else if (hasFeature(answers, 'react-query')) {
     imports.push(`import { QueryClient, QueryClientProvider } from '@tanstack/react-query'`);
     const queryClientSetup = `\nconst queryClient = new QueryClient();`;
 
@@ -45,7 +47,7 @@ export function generateMainFile(answers) {
   }
 
   // Add Router provider if selected
-  if (answers.features.includes('router')) {
+  if (hasFeature(answers, 'router')) {
     imports.push(`import { BrowserRouter } from 'react-router-dom'`);
 
     if (providerWrappers.length === 1) {

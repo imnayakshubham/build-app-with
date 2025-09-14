@@ -50,7 +50,12 @@ export function handleError(error, context = '') {
         }
     }
 
-    process.exit(1);
+    // Don't exit in test environment
+    if (process.env.NODE_ENV !== 'test') {
+        process.exit(1);
+    } else {
+        throw error; // Re-throw for tests to handle
+    }
 }
 
 export function validateProjectName(name) {

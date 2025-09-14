@@ -1,16 +1,14 @@
 import inquirer from 'inquirer';
-import chalk from 'chalk';
-import ora from 'ora';
 import path from 'path';
 import fs from 'fs-extra';
-import { execa } from 'execa';
 import { getPrompts, finalizeAnswers } from './prompts/index.js';
 import { generateViteProject } from './generators/vite/vite-project-generator.js';
-import { generateNextJSProject } from './generators/nextjs/nextjs-project-generator.js';
+import { generateNextJSProject } from './generators/nextjs/nextjs-generator.js';
 import { generateExpressApp } from './generators/express/index.js';
 import { generateFastifyApp } from './generators/fastify/index.js';
 import { installDependencies } from './utils/dependencies.js';
 import { successMessage } from './utils/messages.js';
+import { logger } from './core/logger.js';
 
 export async function createApp() {
   try {
@@ -27,18 +25,17 @@ export async function createApp() {
       projectPath = path.resolve(process.cwd(), uniqueName);
     }
     if (uniqueName !== answers.projectName) {
-      console.log(chalk.yellow(`⚠️  Directory ${answers.projectName} already exists. Using ${uniqueName} instead.`));
+      logger.warning(`Directory ${answers.projectName} already exists. Using ${uniqueName} instead.`);
       answers.projectName = uniqueName;
     }
 
     const isNext = answers.framework === 'nextjs';
-    const isBackend = ['express', 'fastify'].includes(answers.framework);
 
     // Create project directory only when we manage files ourselves
     if (!isNext) {
-      console.log("Creating project directory:", projectPath);
+      logger.debug(`Creating project directory: ${projectPath}`);
       await fs.ensureDir(projectPath);
-      console.log("Project directory created successfully");
+      logger.debug("Project directory created successfully");
     }
 
     // Generate project files based on framework choice
@@ -52,7 +49,7 @@ export async function createApp() {
       await generateFastifyApp(projectPath, answers);
     }
 
-    console.log('Project structure created successfully!');
+    logger.success('Project structure created successfully!');
 
     // Ensure .gitignore exists and includes env files
     const gitignorePath = path.join(projectPath, '.gitignore');
@@ -83,7 +80,11 @@ export async function createApp() {
     successMessage(answers.projectName);
 
   } catch (error) {
-    console.error(chalk.red('❌ Error creating project:'), error.message);
+    logger.error(`Error creating project: ${error.message}`);
+    if (logger.isDevelopment) {
+      logger.debug('Full error stack:');
+      console.error(error.stack);
+    }
     process.exit(1);
   }
 }
