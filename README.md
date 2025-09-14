@@ -16,12 +16,14 @@ An interactive CLI tool that helps you quickly set up production-ready web appli
 
 ## 🚀 Quick Start
 
-### Try it now (no installation required)
+> **⚠️ Important**: This is a CLI tool. Don't use `npm i build-app-with` - that won't work!
+
+### ✨ Recommended: Use directly (no installation needed)
 ```bash
 npx build-app-with my-awesome-app
 ```
 
-### Or install globally
+### 📦 Or install globally for repeated use
 ```bash
 npm install -g build-app-with
 build-app-with my-app
