@@ -167,7 +167,7 @@ import './globals.css'
 ${answers.typescript ? `
 export const metadata: Metadata = {
   title: '${answers.projectName}',
-  description: 'Generated with create-app-with',
+  description: 'Generated with build-app-with',
 }
 ` : ''}
 
@@ -207,7 +207,7 @@ export async function generateAppPage(projectPath, answers) {
         <div className="text-center">
           <h2 className="text-2xl mb-4">🎉 Your Next.js app is ready!</h2>
           <p className="text-gray-600 dark:text-gray-400">
-            Generated with create-app-with
+            Generated with build-app-with
           </p>
         </div>
       </div>

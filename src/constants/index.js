@@ -1,6 +1,6 @@
-export const APP_NAME = "create-app-with";
-export const NPM_URL = "https://www.npmjs.com/package/create-app-with";
-export const GITHUB_URL = "https://github.com/create-app-with/create-app-with";
+export const APP_NAME = "build-app-with";
+export const NPM_URL = "https://www.npmjs.com/package/build-app-with";
+export const GITHUB_URL = "https://github.com/build-app-with/build-app-with";
 export const VERSION = "2.0.0";
 
 

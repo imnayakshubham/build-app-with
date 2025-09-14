@@ -219,7 +219,7 @@ next-env.d.ts
 export function generateReadmeTemplate(answers) {
   return `# ${answers.projectName}
 
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [\`create-app-with\`](https://github.com/imnayakshubham/create-app-with).
+This is a [Next.js](https://nextjs.org/) project bootstrapped with [\`build-app-with\`](https://github.com/imnayakshubham/build-app-with).
 
 ## Getting Started
 

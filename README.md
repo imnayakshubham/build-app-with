@@ -1,240 +1,126 @@
-# 🚀 New React App - Production-Grade Project Generator
+# 🚀 Build App With
 
-A powerful CLI tool that generates production-ready applications with modern frameworks, best practices, and comprehensive boilerplate code.
+**The fastest way to create modern web applications**
 
-## ✨ Features
+An interactive CLI tool that helps you quickly set up production-ready web applications with popular frameworks and features - no complex configuration needed.
 
-### 🎯 Supported Frameworks
-- **Next.js** - Full-stack React framework with App Router
-- **Vite + React** - Lightning-fast frontend development
-- **Express.js** - Production-ready Node.js backend
-- **Fastify** - High-performance Node.js backend
+## 🎯 What can you build?
 
-### 🛠️ Production-Grade Features
-- **TypeScript Support** - Full TypeScript configuration
-- **Error Handling** - Comprehensive error handling and logging
-- **Security** - Helmet, CORS, rate limiting, input validation
-- **Database Integration** - MongoDB, PostgreSQL, MySQL, SQLite
-- **Authentication** - JWT, Sessions, OAuth strategies
-- **Testing** - Jest, Supertest, comprehensive test setup
-- **Docker Support** - Production-ready containerization
-- **Logging** - Winston logger with structured logging
-- **API Documentation** - Swagger/OpenAPI integration
-- **Code Quality** - ESLint, Prettier, Husky pre-commit hooks
+### Frontend Applications
+- **⚛️ React with Next.js** - Full-stack React framework with server-side rendering
+- **⚡ React with Vite** - Lightning-fast React development with modern tooling
 
-### 🎨 Frontend Features
-- **CSS Frameworks** - Tailwind, Bootstrap, MUI, Chakra UI, shadcn/ui
-- **State Management** - Redux Toolkit, Zustand, MobX, Recoil
-- **Data Fetching** - TanStack Query, Axios with interceptors
-- **Forms** - React Hook Form, Formik with validation
-- **Animations** - Framer Motion, React Spring
-- **UI Components** - Ant Design, Material-UI, Chakra UI
-- **Utilities** - React Icons, Toast notifications, i18n
-
-### 🔧 Backend Features
-- **Database ORMs** - Prisma, Mongoose, Sequelize
-- **Authentication** - JWT, Passport.js, NextAuth
-- **API Features** - tRPC, GraphQL support
-- **Middleware** - CORS, Helmet, Morgan, Rate limiting
-- **Validation** - Express Validator, Joi, Zod
-- **Documentation** - Swagger/OpenAPI auto-generation
+### Backend APIs
+- **🚀 Express.js** - Traditional Node.js web server with extensive ecosystem
+- **⚡ Fastify** - High-performance Node.js framework for APIs
 
 ## 🚀 Quick Start
 
-### Installation
+### Try it now (no installation required)
+```bash
+npx build-app-with my-awesome-app
+```
+
+### Or install globally
+```bash
+npm install -g build-app-with
+build-app-with my-app
+```
+
+## 💡 How it works
+
+1. **Choose your framework** - React (Next.js/Vite) or Node.js (Express/Fastify)
+2. **Pick your features** - TypeScript, CSS frameworks, authentication, databases, etc.
+3. **Get your app** - Complete project setup with all files configured and ready to run
+
+## ✨ Available Features
+
+### 🎨 Styling & UI
+- **CSS Frameworks**: Tailwind CSS, Bootstrap, Material-UI, Chakra UI, shadcn/ui
+- **Components**: Pre-built component libraries and design systems
+
+### 🔐 Authentication
+- **Options**: JWT tokens, NextAuth.js, Clerk, Auth0
+- **Ready-to-use**: Login/signup pages and user management
+
+### 💾 Databases
+- **SQL**: PostgreSQL, MySQL, SQLite
+- **NoSQL**: MongoDB
+- **ORMs**: Prisma, Mongoose, Sequelize
+
+### 🛠️ Development Tools
+- **TypeScript**: Full type safety and IntelliSense
+- **Testing**: Jest test framework with example tests
+- **Code Quality**: ESLint, Prettier, pre-commit hooks
+- **Docker**: Production-ready containerization
+
+### 🚀 Production Features
+- **Security**: CORS, Helmet, rate limiting, input validation
+- **Logging**: Structured logging with Winston
+- **API Docs**: Automatic Swagger/OpenAPI documentation
+- **Performance**: Optimized builds and caching
+
+## 📖 Example Usage
 
 ```bash
-# Install globally
-npm install -g create-app-with
+# Create a Next.js app with TypeScript and Tailwind
+npx build-app-with my-next-app
 
-# Or use with npx
-npx create-app-with my-awesome-app
+# Create an Express API with MongoDB and JWT auth
+npx build-app-with my-api
+
+# Create a Vite React app with all the bells and whistles
+npx build-app-with my-react-app
 ```
 
-### Usage
+## 🏃‍♂️ Getting Started After Creation
+
+Once your project is created:
 
 ```bash
-# Start the interactive CLI
-create-app-with
-
-# Or specify project name directly
-create-app-with my-project
+cd your-app-name
+npm install          # Install dependencies
+npm run dev          # Start development server
 ```
 
-## 📁 Project Structure
-
-```
-src/
-├── core/                    # Core utilities
-│   ├── logger.js           # Centralized logging
-│   ├── error-handler.js    # Error handling
-│   └── package-manager.js  # Package management
-├── generators/             # Framework generators
-│   ├── nextjs/            # Next.js generator
-│   ├── vite/              # Vite + React generator
-│   ├── express/           # Express.js generator
-│   └── fastify/           # Fastify generator
-├── templates/             # Code templates
-├── config/                # Configuration files
-├── types/                 # Type definitions
-└── utils/                 # Utility functions
-```
-
-## 🎯 Framework-Specific Features
-
-### Next.js Generator
-- App Router and Pages Router support
-- Server-side rendering (SSR)
-- Static site generation (SSG)
-- API routes
-- Middleware support
-- Image optimization
-- Font optimization
-- Built-in TypeScript support
-
-### Vite + React Generator
-- Lightning-fast HMR
-- Multiple project structures
-- CSS framework integration
-- State management setup
-- Testing configuration
-- Build optimization
-
-### Express.js Generator
-- Modular architecture
-- Database integration
-- Authentication strategies
-- Middleware stack
-- Error handling
-- Logging configuration
-- API documentation
-- Docker support
-
-### Fastify Generator
-- Plugin-based architecture
-- High performance
-- Schema validation
-- TypeScript support
-- WebSocket support
-- GraphQL integration
-- Rate limiting
-- CORS configuration
-
-## 🔧 Configuration
-
-### Environment Variables
-
-Each generated project includes comprehensive environment configuration:
-
-```bash
-# Server Configuration
-PORT=3000
-NODE_ENV=development
-
-# Database Configuration
-DATABASE_URL=your_database_url
-MONGODB_URI=mongodb://localhost:27017/your_db
-
-# Authentication
-JWT_SECRET=your_jwt_secret
-JWT_EXPIRES_IN=7d
-
-# CORS
-CORS_ORIGIN=http://localhost:3000
-```
-
-### Package Manager Support
-
-- **npm** - Default package manager
-- **yarn** - Fast, reliable, and secure
-- **pnpm** - Efficient disk space usage
-
-## 🧪 Testing
-
-All generated projects include comprehensive testing setup:
-
-```bash
-# Run tests
-npm test
-
-# Run tests in watch mode
-npm run test:watch
-
-# Generate coverage report
-npm run test:coverage
-```
-
-## 🐳 Docker Support
-
-Production-ready Docker configuration:
-
-```bash
-# Build Docker image
-docker build -t my-app .
-
-# Run with Docker Compose
-docker-compose up -d
-```
-
-## 📚 Documentation
-
-Each generated project includes:
-- Comprehensive README
-- API documentation (Swagger)
-- Code comments and JSDoc
-- Architecture diagrams
-- Deployment guides
+**For Next.js/Vite**: Open http://localhost:3000
+**For Express/Fastify**: API runs on http://localhost:3000
 
 ## 🤝 Contributing
 
-We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
-### Development Setup
+## 📝 Version Management
+
+For maintainers:
 
 ```bash
-# Clone the repository
-git clone https://github.com/imnayakshubham/create-app-with.git
-
-# Install dependencies
-npm install
-
-# Run in development mode
-npm run dev
-
-# Run tests
-npm test
+npm run version:patch   # Bug fixes (2.0.0 → 2.0.1)
+npm run version:minor   # New features (2.0.0 → 2.1.0)
+npm run version:major   # Breaking changes (2.0.0 → 3.0.0)
 ```
 
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🙏 Acknowledgments
-
-- **Next.js Team** - For the amazing React framework
-- **Vite Team** - For the lightning-fast build tool
-- **Express.js Team** - For the robust Node.js framework
-- **Fastify Team** - For the high-performance Node.js framework
-- **React Community** - For the incredible ecosystem
-
-## 📞 Support
-
-- 🐛 Issues: [GitHub Issues](https://github.com/imnayakshubham/create-app-with/issues)
-- 💬 Discussions: [GitHub Discussions](https://github.com/imnayakshubham/create-app-with/discussions)
-
-## 🚀 Roadmap
-
-- [ ] Vue.js support
-- [ ] Svelte support
-- [ ] Angular support
-- [ ] Microservices architecture
-- [ ] Kubernetes deployment
-- [ ] CI/CD pipeline templates
-- [ ] Monitoring and observability
-- [ ] Performance optimization tools
 
 ---
 
-**Made with ❤️ by the [Create New App](https://github.com/imnayakshubham/create-app-with)**
+**Why Build App With?**
+- ⚡ **Fast setup** - Get a complete project in under 2 minutes
+- 🏗️ **Production-ready** - Best practices and security built-in
+- 🎛️ **Flexible** - Choose exactly what you need, nothing you don't
+- 📚 **Well-documented** - Clear examples and helpful error messages
+- 🔄 **Up-to-date** - Always uses the latest stable versions
 
-*Generate production-ready applications in seconds, not hours.*
+
+## 📞 Support
+
+- 🐛 Issues: [GitHub Issues](https://github.com/imnayakshubham/build-app-with/issues)
+- 💬 Discussions: [GitHub Discussions](https://github.com/imnayakshubham/build-app-with/discussions)
+
+**Made with ❤️ by the [Build App With](https://github.com/imnayakshubham/build-app-with)**
+
+
+**Start building your next great idea today!** 🚀

@@ -5,9 +5,12 @@ const require = createRequire(import.meta.url);
 const { version } = require('../../package.json');
 
 export function welcomeMessage() {
-  console.log(chalk.blue.bold('🚀 Building something Great'));
+  console.log(chalk.blue.bold('🚀 Build App With - Interactive Project Creator'));
   console.log(chalk.gray(`Version ${version}\n`));
-  console.log('Create modern web apps with Next.js, Vite, Express, or Fastify + your choice of features.\n');
+  console.log('Quickly create modern web applications with your choice of:');
+  console.log(chalk.cyan('  • React Apps: Next.js or Vite'));
+  console.log(chalk.cyan('  • Backend APIs: Express or Fastify'));
+  console.log(chalk.gray('  • Plus: TypeScript, authentication, databases, and more\n'));
 }
 
 export function successMessage(projectName) {

@@ -1,11 +1,11 @@
 {
-  "name": "create-app-with",
+  "name": "build-app-with",
   "version": "2.0.0",
-  "description": "Production-grade CLI tool to create modern web applications with Next.js, Vite, Express, and Fastify",
+  "description": "Interactive CLI tool to quickly create modern web applications. Choose from React (Next.js/Vite), Node.js backends (Express/Fastify), with built-in TypeScript, authentication, databases, and more.",
   "main": "index.js",
   "type": "module",
   "bin": {
-    "create-app-with": "./bin/cli.js"
+    "build-app-with": "./bin/cli.js"
   },
   "scripts": {
     "start": "node ./bin/cli.js",
@@ -18,7 +18,11 @@
     "format": "prettier --write src/",
     "build": "echo 'No build step required for CLI tool'",
     "prepublishOnly": "npm run test:core && npm run lint",
-    "test:core": "jest --testPathPattern=core"
+    "test:core": "jest --testPathPattern=core",
+    "version:patch": "npm version patch && npm publish",
+    "version:minor": "npm version minor && npm publish",
+    "version:major": "npm version major && npm publish",
+    "postversion": "git push && git push --tags"
   },
   "keywords": [
     "react",
@@ -39,12 +43,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/imnayakshubham/create-app-with.git"
+    "url": "https://github.com/imnayakshubham/build-app-with.git"
   },
   "bugs": {
-    "url": "https://github.com/imnayakshubham/create-app-with/issues"
+    "url": "https://github.com/imnayakshubham/build-app-with/issues"
   },
-  "homepage": "https://github.com/imnayakshubham/create-app-with#readme",
+  "homepage": "https://github.com/imnayakshubham/build-app-with#readme",
   "dependencies": {
     "chalk": "^5.6.0",
     "execa": "^9.6.0",

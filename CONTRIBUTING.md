@@ -1,6 +1,6 @@
-# 🤝 Contributing to New React App
+# 🤝 Contributing to Build App With
 
-Thank you for your interest in contributing to New React App! This document provides guidelines and information for contributors.
+Thank you for your interest in contributing to Build App With! This document provides guidelines and information for contributors.
 
 ## 📋 Table of Contents
 
@@ -46,13 +46,13 @@ Examples of behavior that contributes to creating a positive environment include
 1. Fork the repository on GitHub
 2. Clone your fork locally:
    ```bash
-   git clone https://github.com/imnayakshubham/create-app-with.git
-   cd create-app-with
+   git clone https://github.com/imnayakshubham/build-app-with.git
+   cd build-app-with
    ```
 
 3. Add the upstream repository:
    ```bash
-   git remote add upstream https://github.com/imnayakshubham/create-app-with.git
+   git remote add upstream https://github.com/imnayakshubham/build-app-with.git
    ```
 
 ## 🛠️ Development Setup
@@ -387,17 +387,7 @@ If you have questions about contributing:
 - Join our community discussions
 - Contact maintainers directly
 
-## 🙏 Recognition
 
-Contributors will be recognized in:
-
-- README contributors section
-- Release notes
-- Project documentation
-- Community highlights
-
----
-
-**Thank you for contributing to New React App! 🎉**
+**Thank you for contributing! 🎉**
 
 *Together, we're building amazing tools for developers worldwide.*
