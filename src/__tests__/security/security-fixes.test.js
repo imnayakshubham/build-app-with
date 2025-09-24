@@ -128,6 +128,55 @@ describe('Security Fixes', () => {
                 .rejects.toThrow('not in the allowlist');
         });
 
+        it('should allow legitimate Next.js creation commands', async () => {
+            // Mock execa to avoid actual command execution
+            const mockExeca = jest.fn().mockResolvedValue({ stdout: 'success' });
+            jest.doMock('execa', () => ({ execa: mockExeca }));
+
+            const { validateCommandArgs } = await import('../../utils/secure-exec.js');
+
+            // These should be valid create-next-app commands
+            expect(validateCommandArgs('npx', [
+                'create-next-app@latest',
+                'my-app',
+                '--app',
+                '--src-dir',
+                '--typescript',
+                '--tailwind',
+                '--eslint',
+                '--import-alias',
+                '@/*'
+            ])).toBe(true);
+
+            expect(validateCommandArgs('npx', [
+                'create-next-app@latest',
+                'test-project',
+                '--js',
+                '--no-tailwind',
+                '--no-eslint'
+            ])).toBe(true);
+        });
+
+        it('should reject malicious npx commands', async () => {
+            const { validateCommandArgs } = await import('../../utils/secure-exec.js');
+
+            // Should reject non-allowlisted npx commands
+            expect(validateCommandArgs('npx', ['malicious-package'])).toBe(false);
+
+            // Should reject shell injection in create-next-app args
+            expect(validateCommandArgs('npx', [
+                'create-next-app@latest',
+                'app; rm -rf /'
+            ])).toBe(false);
+
+            expect(validateCommandArgs('npx', [
+                'create-next-app@latest',
+                'app',
+                '--import-alias',
+                '$(whoami)'
+            ])).toBe(false);
+        });
+
         it('should set secure environment defaults', async () => {
             // Mock execa to capture the options
             const mockExeca = jest.fn().mockResolvedValue({ stdout: 'success' });
@@ -146,6 +195,40 @@ describe('Security Fixes', () => {
             } catch (error) {
                 // Expected to fail in test environment, but we can verify the call
             }
+        });
+    });
+
+    describe('CLI Argument Parsing', () => {
+        it('should parse project name from command line', () => {
+            const originalArgv = process.argv;
+
+            try {
+                // Simulate CLI call: npx build-app-with my-awesome-app
+                process.argv = ['node', 'cli.js', 'my-awesome-app'];
+
+                const { getPrompts } = require('../../prompts/index.js');
+                const prompts = getPrompts('my-awesome-app');
+
+                // Should not include project name prompt when CLI name provided
+                const hasProjectNamePrompt = prompts.some(p => p.name === 'projectName');
+                expect(hasProjectNamePrompt).toBe(false);
+
+                // Should still include framework selection
+                const hasFrameworkPrompt = prompts.some(p => p.name === 'framework');
+                expect(hasFrameworkPrompt).toBe(true);
+
+            } finally {
+                process.argv = originalArgv;
+            }
+        });
+
+        it('should include project name prompt when no CLI argument provided', () => {
+            const { getPrompts } = require('../../prompts/index.js');
+            const prompts = getPrompts(null);
+
+            // Should include project name prompt when no CLI name provided
+            const hasProjectNamePrompt = prompts.some(p => p.name === 'projectName');
+            expect(hasProjectNamePrompt).toBe(true);
         });
     });
 });

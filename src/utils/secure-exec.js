@@ -46,8 +46,17 @@ const ALLOWED_COMMANDS = {
         ]
     },
     npx: {
-        allowedCommands: [],
-        allowedFlags: ['--version', '--help']
+        allowedCommands: [
+            'create-next-app@latest',
+            'create-next-app'
+        ],
+        allowedFlags: [
+            '--version', '--help',
+            // Next.js creation flags
+            '--app', '--src-dir', '--typescript', '--js',
+            '--tailwind', '--no-tailwind', '--eslint', '--no-eslint',
+            '--import-alias'
+        ]
     },
     node: {
         allowedCommands: [],
@@ -112,6 +121,22 @@ export function validateCommandArgs(command, args) {
         return false;
     }
 
+    // Special handling for npx commands
+    if (command === 'npx' && args.length > 0) {
+        const [npxCommand] = args;
+
+        // First argument should be an allowed npx command
+        if (!config.allowedCommands.includes(npxCommand)) {
+            logger.error(`NPX command not in allowlist: ${npxCommand}`);
+            return false;
+        }
+
+        // For create-next-app, validate remaining arguments
+        if (npxCommand.startsWith('create-next-app')) {
+            return validateCreateNextAppArgs(args.slice(1), config);
+        }
+    }
+
     for (const arg of args) {
         if (!arg || typeof arg !== 'string') {
             return false;
@@ -131,10 +156,54 @@ export function validateCommandArgs(command, args) {
             }
         }
 
-        // Validate flags
-        if (arg.startsWith('-') && !config.allowedFlags.includes(arg)) {
+        // Validate flags (skip for npx as it's handled above)
+        if (command !== 'npx' && arg.startsWith('-') && !config.allowedFlags.includes(arg)) {
             logger.error(`Flag not in allowlist: ${arg}`);
             return false;
+        }
+    }
+
+    return true;
+}
+
+/**
+ * Validate create-next-app specific arguments
+ * @param {string[]} args - Arguments after create-next-app command
+ * @param {Object} config - NPX command configuration
+ * @returns {boolean} True if arguments are valid
+ */
+function validateCreateNextAppArgs(args, config) {
+    for (let i = 0; i < args.length; i++) {
+        const arg = args[i];
+
+        // Check for shell metacharacters
+        if (/[;&|`$(){}[\]<>\\]/.test(arg)) {
+            logger.error(`Argument contains shell metacharacters: ${arg}`);
+            return false;
+        }
+
+        if (arg.startsWith('-')) {
+            // It's a flag
+            if (!config.allowedFlags.includes(arg)) {
+                logger.error(`Flag not in allowlist: ${arg}`);
+                return false;
+            }
+
+            // Handle flags with values (like --import-alias)
+            if (arg === '--import-alias' && i + 1 < args.length) {
+                const value = args[i + 1];
+                if (!/^[@/*-_a-zA-Z0-9]+$/.test(value)) {
+                    logger.error(`Invalid import alias value: ${value}`);
+                    return false;
+                }
+                i++; // Skip the next argument as it's the value for this flag
+            }
+        } else {
+            // It's likely a project name - validate it
+            if (!validatePackageName(arg) && !/^[a-zA-Z0-9-_]+$/.test(arg)) {
+                logger.error(`Invalid project name: ${arg}`);
+                return false;
+            }
         }
     }
 

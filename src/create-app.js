@@ -1,5 +1,4 @@
 import inquirer from 'inquirer';
-import path from 'path';
 import fs from 'fs-extra';
 import { getPrompts, finalizeAnswers } from './prompts/index.js';
 import { generateViteProject } from './generators/vite/vite-project-generator.js';
@@ -11,13 +10,17 @@ import { successMessage } from './utils/messages.js';
 import { logger } from './core/logger.js';
 import { generateUniqueProjectPath, safePathJoin, safeCreateDirectory } from './utils/path-security.js';
 
-export async function createApp() {
+export async function createApp(cliProjectName = null) {
   try {
-    // Get user preferences through prompts
-    const answers = finalizeAnswers(await inquirer.prompt(getPrompts()));
+    // Get user preferences through prompts, with optional CLI project name
+    const prompts = getPrompts(cliProjectName);
+    const answers = finalizeAnswers(await inquirer.prompt(prompts));
+
+    // Use CLI project name if provided, otherwise use prompt response
+    const projectName = cliProjectName || answers.projectName;
 
     // Safely compute a unique project name/path
-    const { path: projectPath, name: uniqueName } = await generateUniqueProjectPath(answers.projectName);
+    const { path: projectPath, name: uniqueName } = await generateUniqueProjectPath(projectName);
 
     // Update answers with the validated project name
     answers.projectName = uniqueName;

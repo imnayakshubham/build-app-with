@@ -113,8 +113,8 @@ export function getFeaturePrompts(currentAnswers) {
 }
 
 
-export function getPrompts() {
-    return [
+export function getPrompts(cliProjectName = null) {
+    const prompts = [
         // 1. Framework selection at the top
         {
             type: 'list',
@@ -136,9 +136,12 @@ export function getPrompts() {
                 { name: 'Default (Quick start with recommended settings)', value: 'default' },
                 { name: 'Customize (Advanced: choose your own settings)', value: 'customize' }
             ]
-        },
-        // 3. Project name
-        {
+        }
+    ];
+
+    // 3. Project name - only ask if not provided via CLI
+    if (!cliProjectName) {
+        prompts.push({
             type: 'input',
             name: 'projectName',
             message: 'What is your project name?',
@@ -150,8 +153,12 @@ export function getPrompts() {
                 return true;
             },
             default: "my-app"
-        },
-        // 4. Customization questions (only for "customize")
+        });
+    }
+
+    // Continue with the rest of the prompts
+    // 4. Customization questions (only for "customize")
+    prompts.push(
         {
             type: 'list',
             name: 'cssFramework',
@@ -229,8 +236,9 @@ export function getPrompts() {
             when: () => false
         }
         // 5. Final actions
+    );
 
-    ];
+    return prompts;
 }
 
 // After prompting, always enforce TS for Next.js

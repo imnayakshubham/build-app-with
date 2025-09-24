@@ -1,8 +1,20 @@
 #!/usr/bin/env node
 
-import { createApp } from '../src/create-app.js';
-import { welcomeMessage } from '../src/utils/messages.js';
-import { logger } from '../src/core/logger.js';
+// Bundled CLI executable
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+const { createApp } = require('../dist/build-app-with.cjs');
+import path from 'path';
+import fs from 'fs';
+
+// Import logger from bundled package for error handling
+const bundledExports = require('../dist/build-app-with.cjs');
+const logger = bundledExports.logger || { error: console.error, isDevelopment: false };
+
+// Simple welcome message function
+function welcomeMessage() {
+  console.log('🚀 Welcome to Build App With!');
+}
 
 /**
  * Parse command line arguments
@@ -64,9 +76,8 @@ For more information, visit: https://github.com/imnayakshubham/build-app-with
  */
 async function showVersion() {
   try {
-    // Import package.json to get version
-    const pkg = await import('../package.json');
-    console.log(`v${pkg.default.version}`);
+    const pkg = require('../package.json');
+    console.log(`v${pkg.version}`);
   } catch {
     console.log('Version unavailable');
   }
