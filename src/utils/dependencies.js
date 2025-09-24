@@ -1,5 +1,6 @@
 import { execa } from 'execa';
 import { logger } from '../core/logger.js';
+import { secureExec } from './secure-exec.js';
 
 export async function installDependencies(projectPath, answers) {
   if (!Array.isArray(answers.postSetup) || !answers.postSetup.includes('install')) {
@@ -11,9 +12,10 @@ export async function installDependencies(projectPath, answers) {
   try {
     logger.debug(`Installing dependencies in ${projectPath}`);
     // Install dependencies
-    await execa('npm', ['install'], {
+    await secureExec('npm', ['install'], {
       cwd: projectPath,
-      stdio: 'pipe'
+      stdio: 'pipe',
+      timeout: 600000 // 10 minutes for dependency installation
     });
 
     logger.stopSpinner(true, 'Dependencies installed successfully!');

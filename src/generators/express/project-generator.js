@@ -8,6 +8,7 @@ import { logger } from '../../core/logger.js';
 import { packageManager } from '../../core/package-manager.js';
 import { featurePackageMap, frameworkBasePackages } from '../../config/package-mappings.js';
 import { FRAMEWORKS, FEATURES, DATABASES, AUTH_STRATEGIES } from '../../types/index.js';
+import { generateJwtSecret, generateDatabasePassword } from '../../utils/security.js';
 import { generatePackageJson } from './templates/package-json.js';
 import { generateAppJs } from './templates/app.js';
 import { generateServerJs } from './templates/server.js';
@@ -289,7 +290,7 @@ NODE_ENV=development
 DB_PORT=3306
 DB_NAME=${answers.projectName}
 DB_USER=root
-DB_PASSWORD=password
+DB_PASSWORD=${generateDatabasePassword()}
 `;
     } else if (answers.database === DATABASES.SQLITE) {
         envContent += `DATABASE_URL=file:./dev.db
@@ -299,7 +300,7 @@ DB_PASSWORD=password
     if (answers.authStrategy && answers.authStrategy !== 'none') {
         envContent += `
 # Authentication
-JWT_SECRET=your-super-secret-jwt-key
+JWT_SECRET=${generateJwtSecret()}
 JWT_EXPIRES_IN=7d
 `;
     }

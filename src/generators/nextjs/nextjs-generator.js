@@ -6,6 +6,7 @@
 import { execa } from 'execa';
 import { logger } from '../../core/logger.js';
 import { handleError } from '../../core/error-handler.js';
+import { secureExec, sanitizeNextJSArgs } from '../../utils/secure-exec.js';
 import { calculateDependencies, validatePackageCompatibility } from './dependency-manager.js';
 import {
   generatePackageJson,
@@ -66,35 +67,21 @@ export async function generateNextJSProject(projectPath, answers) {
 async function createNextAppBase(projectPath, answers) {
   logger.debug('Creating base Next.js project...');
 
-  const createNextAppArgs = [
-    'create-next-app@latest',
-    answers.projectName,
-    '--app',
-    '--src-dir',
-    '--import-alias', '@/*'
-  ];
-
-  // Add TypeScript flag if enabled
-  if (answers.typescript) {
-    createNextAppArgs.push('--typescript');
-  } else {
-    createNextAppArgs.push('--js');
-  }
-
-  // Add Tailwind flag if selected
-  if (answers.cssFramework === 'tailwind' || answers.cssFramework === 'shadcn') {
-    createNextAppArgs.push('--tailwind');
-  } else {
-    createNextAppArgs.push('--no-tailwind');
-  }
-
-  // Add ESLint flag (always include)
-  createNextAppArgs.push('--eslint');
-
   try {
-    await execa('npx', createNextAppArgs, {
+    // Use secure argument sanitization
+    const sanitizedArgs = sanitizeNextJSArgs(answers.projectName, {
+      useAppRouter: true,
+      useSrcDir: true,
+      importAlias: '@/*',
+      typescript: answers.typescript,
+      tailwind: answers.cssFramework === 'tailwind' || answers.cssFramework === 'shadcn',
+      eslint: true
+    });
+
+    await secureExec('npx', sanitizedArgs, {
       stdio: 'pipe',
-      cwd: process.cwd()
+      cwd: process.cwd(),
+      timeout: 600000 // 10 minutes for Next.js creation
     });
 
     logger.debug('Base Next.js project created');
@@ -155,18 +142,20 @@ async function installAdditionalDependencies(projectPath, dependencies, devDepen
   try {
     // Install additional regular dependencies
     if (additionalDeps.length > 0) {
-      await execa('npm', ['install', ...additionalDeps], {
+      await secureExec('npm', ['install', ...additionalDeps], {
         stdio: 'pipe',
-        cwd: projectPath
+        cwd: projectPath,
+        timeout: 300000 // 5 minutes
       });
       logger.debug(`Installed dependencies: ${additionalDeps.join(', ')}`);
     }
 
     // Install additional dev dependencies
     if (additionalDevDeps.length > 0) {
-      await execa('npm', ['install', '--save-dev', ...additionalDevDeps], {
+      await secureExec('npm', ['install', '--save-dev', ...additionalDevDeps], {
         stdio: 'pipe',
-        cwd: projectPath
+        cwd: projectPath,
+        timeout: 300000 // 5 minutes
       });
       logger.debug(`Installed dev dependencies: ${additionalDevDeps.join(', ')}`);
     }

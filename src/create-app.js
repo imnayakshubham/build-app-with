@@ -9,32 +9,25 @@ import { generateFastifyApp } from './generators/fastify/index.js';
 import { installDependencies } from './utils/dependencies.js';
 import { successMessage } from './utils/messages.js';
 import { logger } from './core/logger.js';
+import { generateUniqueProjectPath, safePathJoin, safeCreateDirectory } from './utils/path-security.js';
 
 export async function createApp() {
   try {
     // Get user preferences through prompts
     const answers = finalizeAnswers(await inquirer.prompt(getPrompts()));
 
-    // Compute a unique project name/path
-    let baseName = answers.projectName;
-    let uniqueName = baseName;
-    let projectPath = path.resolve(process.cwd(), uniqueName);
-    let counter = 1;
-    while (fs.existsSync(projectPath)) {
-      uniqueName = `${baseName}-${counter++}`;
-      projectPath = path.resolve(process.cwd(), uniqueName);
-    }
-    if (uniqueName !== answers.projectName) {
-      logger.warning(`Directory ${answers.projectName} already exists. Using ${uniqueName} instead.`);
-      answers.projectName = uniqueName;
-    }
+    // Safely compute a unique project name/path
+    const { path: projectPath, name: uniqueName } = await generateUniqueProjectPath(answers.projectName);
+
+    // Update answers with the validated project name
+    answers.projectName = uniqueName;
 
     const isNext = answers.framework === 'nextjs';
 
     // Create project directory only when we manage files ourselves
     if (!isNext) {
       logger.debug(`Creating project directory: ${projectPath}`);
-      await fs.ensureDir(projectPath);
+      await safeCreateDirectory(projectPath, process.cwd());
       logger.debug("Project directory created successfully");
     }
 
@@ -52,7 +45,7 @@ export async function createApp() {
     logger.success('Project structure created successfully!');
 
     // Ensure .gitignore exists and includes env files
-    const gitignorePath = path.join(projectPath, '.gitignore');
+    const gitignorePath = safePathJoin(projectPath, '.gitignore');
     let gitignoreContent = '';
     if (await fs.pathExists(gitignorePath)) {
       gitignoreContent = await fs.readFile(gitignorePath, 'utf8');
@@ -68,7 +61,7 @@ export async function createApp() {
     await fs.writeFile(gitignorePath, updatedGitignore);
 
     // Ensure .env exists
-    const envPath = path.join(projectPath, '.env');
+    const envPath = safePathJoin(projectPath, '.env');
     if (!(await fs.pathExists(envPath))) {
       await fs.writeFile(envPath, '');
     }

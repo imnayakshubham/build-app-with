@@ -5,6 +5,7 @@
 import { execa } from 'execa';
 import { logger } from './logger.js';
 import { DependencyError } from './error-handler.js';
+import { secureExec, validatePackageName } from '../utils/secure-exec.js';
 
 export class PackageManager {
     constructor(manager = 'npm') {
@@ -36,8 +37,16 @@ export class PackageManager {
 
     async getLatestVersion(packageName) {
         try {
+            // Validate package name first
+            if (!validatePackageName(packageName)) {
+                logger.warning(`Invalid package name: ${packageName}, using "latest" tag instead.`);
+                return 'latest';
+            }
+
             const command = this.commands[this.manager].view;
-            const { stdout } = await execa(command[0], [...command.slice(1), packageName, 'version']);
+            const { stdout } = await secureExec(command[0], [...command.slice(1), packageName, 'version'], {
+                timeout: 30000 // 30 seconds for version check
+            });
             return stdout.trim();
         } catch (error) {
             logger.warning(`Could not fetch version for ${packageName}, using "latest" tag instead.`);
@@ -70,16 +79,22 @@ export class PackageManager {
 
     async runCommand(projectPath, command) {
         try {
-            logger.logCommand(command.join(' '));
-            await execa(command[0], command.slice(1), {
+            // Validate all package names in the command
+            const args = command.slice(1);
+            for (const arg of args) {
+                if (!arg.startsWith('-') && !['install', 'add', 'remove', 'list', 'view', 'info'].includes(arg)) {
+                    const packageName = arg.split('@')[0]; // Remove version specifier
+                    if (!validatePackageName(packageName)) {
+                        throw new DependencyError(`Invalid package name: ${packageName}`);
+                    }
+                }
+            }
+
+            await secureExec(command[0], command.slice(1), {
                 cwd: projectPath,
                 stdio: 'pipe',
                 timeout: 300000, // 5 minutes timeout
-                env: {
-                    ...process.env,
-                    NODE_ENV: 'production',
-                    CI: 'true' // Prevent interactive prompts
-                }
+                nodeEnv: 'production'
             });
         } catch (error) {
             throw new DependencyError(
@@ -91,7 +106,15 @@ export class PackageManager {
 
     async checkIfInstalled(packageName) {
         try {
-            await execa(this.manager, ['list', packageName], { stdio: 'pipe' });
+            // Validate package name first
+            if (!validatePackageName(packageName)) {
+                return false;
+            }
+
+            await secureExec(this.manager, ['list', packageName], {
+                stdio: 'pipe',
+                timeout: 30000 // 30 seconds for package check
+            });
             return true;
         } catch {
             return false;

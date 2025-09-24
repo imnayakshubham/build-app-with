@@ -6,6 +6,7 @@ import fs from 'fs-extra';
 import path from 'path';
 import { logger } from '../../core/logger.js';
 import { generateCreditsSection } from '../../utils/credits.js';
+import { generateJwtSecret } from '../../utils/security.js';
 
 export async function generateSimpleExpressProject(projectPath, answers) {
   try {
@@ -151,7 +152,8 @@ NODE_ENV=development
 MONGODB_URI=mongodb://localhost:27017/${answers.projectName}
 
 # Authentication
-JWT_SECRET=your-super-secret-jwt-key
+# WARNING: This is a generated secret - keep it secure!
+JWT_SECRET=${generateJwtSecret()}
 JWT_EXPIRES_IN=7d
 
 # CORS

@@ -4,6 +4,7 @@
 
 import chalk from 'chalk';
 import { logger } from './logger.js';
+import { validateProjectName as secureValidateProjectName } from '../utils/path-security.js';
 
 export class ProjectGeneratorError extends Error {
     constructor(message, code = 'GENERATOR_ERROR', details = null) {
@@ -59,22 +60,12 @@ export function handleError(error, context = '') {
 }
 
 export function validateProjectName(name) {
-    if (!name || typeof name !== 'string') {
-        throw new ValidationError('Project name is required', 'projectName');
+    try {
+        secureValidateProjectName(name);
+        return true;
+    } catch (error) {
+        throw new ValidationError(error.message, 'projectName');
     }
-
-    if (!/^[a-zA-Z0-9-_]+$/.test(name)) {
-        throw new ValidationError(
-            'Project name can only contain letters, numbers, hyphens, and underscores',
-            'projectName'
-        );
-    }
-
-    if (name.length > 50) {
-        throw new ValidationError('Project name must be 50 characters or less', 'projectName');
-    }
-
-    return true;
 }
 
 export function validateFramework(framework) {

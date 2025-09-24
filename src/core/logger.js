@@ -4,6 +4,7 @@
 
 import chalk from 'chalk';
 import ora from 'ora';
+import { sanitizeSensitiveData } from '../utils/security.js';
 
 class Logger {
     constructor() {
@@ -14,31 +15,36 @@ class Logger {
 
     debug(message) {
         if (this.isDevelopment && !this.isQuiet) {
-            console.log(chalk.gray('🔍'), chalk.dim(message));
+            const sanitizedMessage = sanitizeSensitiveData(message);
+            console.log(chalk.gray('🔍'), chalk.dim(sanitizedMessage));
         }
     }
 
     info(message) {
         if (!this.isQuiet) {
-            console.log(chalk.blue('ℹ'), message);
+            const sanitizedMessage = sanitizeSensitiveData(message);
+            console.log(chalk.blue('ℹ'), sanitizedMessage);
         }
     }
 
     success(message) {
         if (!this.isQuiet) {
-            console.log(chalk.green('✓'), message);
+            const sanitizedMessage = sanitizeSensitiveData(message);
+            console.log(chalk.green('✓'), sanitizedMessage);
         }
     }
 
     warning(message) {
         if (!this.isQuiet) {
-            console.log(chalk.yellow('⚠'), message);
+            const sanitizedMessage = sanitizeSensitiveData(message);
+            console.log(chalk.yellow('⚠'), sanitizedMessage);
         }
     }
 
     error(message) {
-        // Always show errors, even in quiet mode
-        console.error(chalk.red('✗'), message);
+        // Always show errors, even in quiet mode, but sanitize sensitive data
+        const sanitizedMessage = sanitizeSensitiveData(message);
+        console.error(chalk.red('✗'), sanitizedMessage);
     }
 
     startSpinner(message) {
@@ -71,7 +77,8 @@ class Logger {
 
     logStep(step, total, message) {
         if (!this.isQuiet) {
-            console.log(chalk.cyan(`[${step}/${total}]`), message);
+            const sanitizedMessage = sanitizeSensitiveData(message);
+            console.log(chalk.cyan(`[${step}/${total}]`), sanitizedMessage);
         } else if (this.isDevelopment) {
             this.debug(`Step ${step}/${total}: ${message}`);
         }
@@ -81,7 +88,8 @@ class Logger {
         if (this.isDevelopment && !this.isQuiet) {
             const gray = chalk.gray ?? ((str) => str);
             const dim = chalk.dim ?? ((str) => str);
-            console.log(gray('$'), dim(command));
+            const sanitizedCommand = sanitizeSensitiveData(command);
+            console.log(gray('$'), dim(sanitizedCommand));
         }
     }
 }

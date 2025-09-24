@@ -134,26 +134,32 @@ body {
  */
 export function generateEnvTemplate(answers) {
   let envContent = `# Environment variables for ${answers.projectName}
+# WARNING: Replace all placeholder values with real credentials before deploying!
+# Never commit real secrets to version control!
+
 NEXTAUTH_URL=http://localhost:3000
-NEXTAUTH_SECRET=your-secret-key-here
+# Generate a secure secret using: openssl rand -base64 32
+NEXTAUTH_SECRET=REPLACE_WITH_SECURE_RANDOM_SECRET
 
 `;
 
   if (answers.authStrategy === 'clerk') {
     envContent += `# Clerk Configuration
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your-clerk-publishable-key
-CLERK_SECRET_KEY=your-clerk-secret-key
+# Get your keys from: https://clerk.com/docs/quickstarts/nextjs
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_live_XXXXXXXXXXXXXXXXXXXXXXXXXXXX
+CLERK_SECRET_KEY=sk_live_XXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 `;
   }
 
   if (answers.authStrategy === 'auth0') {
     envContent += `# Auth0 Configuration
-AUTH0_SECRET=your-auth0-secret
+# Get your credentials from: https://manage.auth0.com/dashboard
+AUTH0_SECRET=REPLACE_WITH_SECURE_RANDOM_SECRET
 AUTH0_BASE_URL=http://localhost:3000
-AUTH0_ISSUER_BASE_URL=your-auth0-domain
-AUTH0_CLIENT_ID=your-auth0-client-id
-AUTH0_CLIENT_SECRET=your-auth0-client-secret
+AUTH0_ISSUER_BASE_URL=https://YOUR_DOMAIN.auth0.com
+AUTH0_CLIENT_ID=YOUR_AUTH0_CLIENT_ID
+AUTH0_CLIENT_SECRET=YOUR_AUTH0_CLIENT_SECRET
 
 `;
   }

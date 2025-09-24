@@ -8,6 +8,7 @@ import { logger } from '../../core/logger.js';
 import { packageManager } from '../../core/package-manager.js';
 import { featurePackageMap, frameworkBasePackages } from '../../config/package-mappings.js';
 import { FRAMEWORKS, FEATURES, DATABASES, AUTH_STRATEGIES } from '../../types/index.js';
+import { generateSecureEnvTemplate, generateJwtSecret, generateDatabasePassword } from '../../utils/security.js';
 import { generatePackageJson } from './templates/package-json.js';
 import { generateAppJs } from './templates/app.js';
 import { generateServerJs } from './templates/server.js';
@@ -254,56 +255,68 @@ build/
 }
 
 async function generateEnvExample(projectPath, answers) {
-    let envContent = `# Server Configuration
-PORT=3000
-NODE_ENV=development
-HOST=0.0.0.0
+    const config = {
+        nodeEnv: 'development',
+        port: 3000,
+        additionalVars: {
+            HOST: '0.0.0.0'
+        }
+    };
 
-# Database Configuration
-`;
+    // Add database configuration if specified
+    if (answers.database) {
+        const dbPassword = generateDatabasePassword();
 
-    if (answers.database === DATABASES.MONGODB) {
-        envContent += `MONGODB_URI=mongodb://localhost:27017/${answers.projectName}
-`;
-    } else if (answers.database === DATABASES.POSTGRESQL) {
-        envContent += `DATABASE_URL=postgresql://username:password@localhost:5432/${answers.projectName}
-`;
-    } else if (answers.database === DATABASES.MYSQL) {
-        envContent += `DB_HOST=localhost
-DB_PORT=3306
-DB_NAME=${answers.projectName}
-DB_USER=root
-DB_PASSWORD=password
-`;
-    } else if (answers.database === DATABASES.SQLITE) {
-        envContent += `DATABASE_URL=file:./dev.db
-`;
+        if (answers.database === DATABASES.MONGODB) {
+            config.additionalVars['MONGODB_URI'] = `mongodb://localhost:27017/${answers.projectName}`;
+        } else if (answers.database === DATABASES.POSTGRESQL) {
+            config.database = {
+                host: 'localhost',
+                port: 5432,
+                name: answers.projectName,
+                user: 'dbuser',
+            };
+            config.additionalVars['DATABASE_URL'] = `postgresql://dbuser:${dbPassword}@localhost:5432/${answers.projectName}`;
+        } else if (answers.database === DATABASES.MYSQL) {
+            config.database = {
+                host: 'localhost',
+                port: 3306,
+                name: answers.projectName,
+                user: 'dbuser',
+            };
+        } else if (answers.database === DATABASES.SQLITE) {
+            config.additionalVars['DATABASE_URL'] = 'file:./dev.db';
+        }
     }
 
+    // Add JWT configuration if authentication is enabled
     if (answers.authStrategy && answers.authStrategy !== 'none') {
-        envContent += `
-# Authentication
-JWT_SECRET=your-super-secret-jwt-key
-JWT_EXPIRES_IN=7d
-`;
+        config.jwt = {
+            expiresIn: '7d'
+        };
     }
 
+    // Add CORS configuration if enabled
     if (answers.features.includes(FEATURES.CORS)) {
-        envContent += `
-# CORS
-CORS_ORIGIN=http://localhost:3000
-`;
+        config.additionalVars['CORS_ORIGIN'] = 'http://localhost:3000';
     }
 
+    // Add rate limiting configuration if enabled
     if (answers.features.includes('rate-limit')) {
-        envContent += `
-# Rate Limiting
-RATE_LIMIT_MAX=100
-RATE_LIMIT_TIME_WINDOW=60000
-`;
+        config.additionalVars['RATE_LIMIT_MAX'] = '100';
+        config.additionalVars['RATE_LIMIT_TIME_WINDOW'] = '60000';
     }
+
+    // Generate secure environment template
+    const envContent = generateSecureEnvTemplate(config);
 
     await fs.writeFile(path.join(projectPath, '.env.example'), envContent);
+
+    // Also create a real .env file with the same secure values
+    await fs.writeFile(path.join(projectPath, '.env'), envContent);
+
+    logger.info('✅ Generated .env files with secure random secrets');
+    logger.warning('⚠️  IMPORTANT: Change all default values before deploying to production!');
 }
 
 async function installDependencies(projectPath, answers) {

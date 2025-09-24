@@ -154,9 +154,11 @@ ${answers.authStrategy === 'clerk' ? `
 2. Create a new application
 3. Copy your API keys to \`.env.local\`:
    \`\`\`bash
-   VITE_CLERK_PUBLISHABLE_KEY=your_publishable_key
-   VITE_CLERK_SECRET_KEY=your_secret_key
+   VITE_CLERK_PUBLISHABLE_KEY=pk_live_XXXXXXXXXXXXXXXXXXXXXXXXXXXX
+   VITE_CLERK_SECRET_KEY=sk_live_XXXXXXXXXXXXXXXXXXXXXXXXXXXX
    \`\`\`
+
+   ⚠️  **Security Warning**: Never commit real API keys to version control!
 4. Configure your authentication settings in the Clerk dashboard
 ` : ''}
 
@@ -236,10 +238,14 @@ export function UserProfile() {
   await fs.writeFile(path.join(srcDir, 'components', 'SignUpForm.jsx'), signUpComponent);
   await fs.writeFile(path.join(srcDir, 'components', 'UserProfile.jsx'), userButtonComponent);
 
-  // Generate .env.example
+  // Generate .env.example with security warnings
   const envExample = `# Clerk Authentication
-VITE_CLERK_PUBLISHABLE_KEY=your_publishable_key_here
-VITE_CLERK_SECRET_KEY=your_secret_key_here
+# WARNING: Replace with your actual Clerk API keys from https://clerk.com
+# Never commit real API keys to version control!
+VITE_CLERK_PUBLISHABLE_KEY=pk_live_XXXXXXXXXXXXXXXXXXXXXXXXXXXX
+VITE_CLERK_SECRET_KEY=sk_live_XXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+# Generate secure keys at: https://clerk.com/docs/references/nodejs/available-methods#generate-api-keys
 `;
 
   await fs.writeFile(path.join(projectPath, '.env.example'), envExample);

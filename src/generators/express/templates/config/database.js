@@ -78,8 +78,13 @@ import { logger } from '../utils/logger.js';
 
 const sequelize = new Sequelize(
   process.env.DB_NAME || '${answers.projectName}',
-  process.env.DB_USER || 'root',
-  process.env.DB_PASSWORD || 'password',
+  process.env.DB_USER || 'dbuser',
+  process.env.DB_PASSWORD || (() => {
+    if (process.env.NODE_ENV === 'production') {
+      throw new Error('DB_PASSWORD environment variable is required in production');
+    }
+    return 'DEV_ONLY_CHANGE_ME';
+  })(),
   {
     host: process.env.DB_HOST || 'localhost',
     port: process.env.DB_PORT || 3306,
