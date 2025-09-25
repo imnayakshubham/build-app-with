@@ -1,8 +1,5 @@
 import chalk from 'chalk';
-import { createRequire } from 'module';
-
-const require = createRequire(import.meta.url);
-const { version } = require('../../package.json');
+import { version } from './version.js';
 
 export function welcomeMessage() {
   console.log(chalk.blue.bold('🚀 Build App With - Interactive Project Creator'));

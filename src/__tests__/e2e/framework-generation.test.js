@@ -189,7 +189,8 @@ describe('Framework Generation E2E Tests', () => {
         framework: 'vite-react',
         setupType: 'customize',
         projectStructure: 'feature-based',
-        typescript: false
+        typescript: false,
+        features: []
       };
 
       await generateViteProject(projectPath, answers);
@@ -207,6 +208,7 @@ describe('Framework Generation E2E Tests', () => {
       const answers = {
         projectName: 'test-domain-structure',
         framework: 'vite-react',
+        features: [],
         setupType: 'customize',
         projectStructure: 'domain-driven',
         typescript: true
@@ -229,7 +231,8 @@ describe('Framework Generation E2E Tests', () => {
         framework: 'vite-react',
         setupType: 'customize',
         typescript: true,
-        cssFramework: 'tailwind'
+        cssFramework: 'tailwind',
+        features: []
       };
 
       await generateViteProject(projectPath, answers);

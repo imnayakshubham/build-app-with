@@ -46,21 +46,21 @@ export function validateProjectName(projectName) {
     }
 
     // Check for invalid characters (Windows filesystem restrictions + additional security)
+    // eslint-disable-next-line no-control-regex
     const invalidChars = /[<>:"|?*\x00-\x1F\x80-\x9F]/;
     if (invalidChars.test(trimmed)) {
         throw new Error('Project name contains invalid characters');
     }
 
-    // Only allow alphanumeric, hyphens, underscores, and dots
-    // Dots are allowed for extensions but not at start/end
-    const validPattern = /^[a-zA-Z0-9][a-zA-Z0-9._-]*[a-zA-Z0-9]$|^[a-zA-Z0-9]$/;
+    // Only allow alphanumeric, hyphens, and underscores (no dots)
+    const validPattern = /^[a-zA-Z0-9][a-zA-Z0-9_-]*[a-zA-Z0-9]$|^[a-zA-Z0-9]$/;
     if (!validPattern.test(trimmed)) {
-        throw new Error('Project name can only contain letters, numbers, hyphens, underscores, and dots (not at start/end)');
+        throw new Error('Project name can only contain letters, numbers, hyphens, and underscores');
     }
 
     // Length restrictions
-    if (trimmed.length > 214) {
-        throw new Error('Project name must be 214 characters or less');
+    if (trimmed.length > 50) {
+        throw new Error('Project name must be 50 characters or less');
     }
 
     if (trimmed.length < 1) {
@@ -169,6 +169,7 @@ export function safePathJoin(basePath, ...segments) {
         }
 
         // Check for invalid characters
+        // eslint-disable-next-line no-control-regex
         const invalidChars = /[<>:"|?*\x00-\x1F\x80-\x9F]/;
         if (invalidChars.test(segment)) {
             throw new Error(`Path segment contains invalid characters: ${segment}`);

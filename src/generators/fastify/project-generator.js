@@ -274,7 +274,7 @@ async function generateEnvExample(projectPath, answers) {
                 host: 'localhost',
                 port: 5432,
                 name: answers.projectName,
-                user: 'dbuser',
+                user: 'dbuser'
             };
             config.additionalVars['DATABASE_URL'] = `postgresql://dbuser:${dbPassword}@localhost:5432/${answers.projectName}`;
         } else if (answers.database === DATABASES.MYSQL) {
@@ -282,7 +282,7 @@ async function generateEnvExample(projectPath, answers) {
                 host: 'localhost',
                 port: 3306,
                 name: answers.projectName,
-                user: 'dbuser',
+                user: 'dbuser'
             };
         } else if (answers.database === DATABASES.SQLITE) {
             config.additionalVars['DATABASE_URL'] = 'file:./dev.db';

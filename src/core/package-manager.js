@@ -83,7 +83,7 @@ export class PackageManager {
             const args = command.slice(1);
             for (const arg of args) {
                 if (!arg.startsWith('-') && !['install', 'add', 'remove', 'list', 'view', 'info'].includes(arg)) {
-                    const packageName = arg.split('@')[0]; // Remove version specifier
+                    const [packageName] = arg.split('@'); // Remove version specifier
                     if (!validatePackageName(packageName)) {
                         throw new DependencyError(`Invalid package name: ${packageName}`);
                     }

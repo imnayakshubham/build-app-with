@@ -107,7 +107,7 @@ export function sanitizeSensitiveData(input) {
             replacement: '$1://***:***REDACTED***@'
         },
         {
-            pattern: /Bearer\s+[A-Za-z0-9\-._~+\/]+=*/gi,
+            pattern: /Bearer\s+[A-Za-z0-9\-._~+/]+=*/gi,
             replacement: 'Bearer ***REDACTED***'
         }
     ];

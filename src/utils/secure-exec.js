@@ -249,7 +249,7 @@ export function sanitizeProjectName(projectName) {
 export async function secureExec(command, args = [], options = {}) {
     // Validate command and arguments
     if (!validateCommandArgs(command, args)) {
-        throw new Error(`Invalid or unsafe command: ${command} ${args.join(' ')}`);
+        throw new Error(`Command "${command}" not in the allowlist`);
     }
 
     // Set secure defaults
