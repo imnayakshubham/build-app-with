@@ -92,20 +92,9 @@ npm run dev          # Start development server
 
 We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
-## 📝 Version Management
-
-For maintainers:
-
-```bash
-npm run version:patch   # Bug fixes (2.0.0 → 2.0.1)
-npm run version:minor   # New features (2.0.0 → 2.1.0)
-npm run version:major   # Breaking changes (2.0.0 → 3.0.0)
-```
-
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
 
 ---
 
