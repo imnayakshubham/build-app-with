@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "bin": {
-    "build-app-with": "./bin/cli.js"
+    "build-app-with": "./bin/build-app-with.js"
   },
   "scripts": {
     "start": "node ./bin/cli.js",

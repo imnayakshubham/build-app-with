@@ -210,7 +210,7 @@ export function getPrompts(cliProjectName = null) {
             ],
             default: 0,
             when: (answers) =>
-                answers.setupType === 'customize' && answers.framework === 'react'
+                answers.setupType === 'customize' && answers.framework === 'vite-react'
         },
         // ESLint and Prettier prompts hidden per user request
         {
@@ -241,9 +241,13 @@ export function getPrompts(cliProjectName = null) {
     return prompts;
 }
 
-// After prompting, always enforce TS for Next.js
+// After prompting, always enforce TS for Next.js and default to TS for Vite+React
 export function finalizeAnswers(answers) {
     if (answers.framework === 'nextjs') {
+        answers.typescript = true;
+    }
+    // Default to TypeScript for Vite+React if not explicitly set
+    if (answers.framework === 'vite-react' && answers.typescript === undefined) {
         answers.typescript = true;
     }
     return answers;
