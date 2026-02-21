@@ -48,14 +48,18 @@ const ALLOWED_COMMANDS = {
     npx: {
         allowedCommands: [
             'create-next-app@latest',
-            'create-next-app'
+            'create-next-app',
+            'create-vite@latest',
+            'create-vite'
         ],
         allowedFlags: [
             '--version', '--help',
             // Next.js creation flags
             '--app', '--src-dir', '--typescript', '--js',
             '--tailwind', '--no-tailwind', '--eslint', '--no-eslint',
-            '--import-alias'
+            '--import-alias',
+            // Vite creation flags
+            '--template'
         ]
     },
     node: {
@@ -135,6 +139,11 @@ export function validateCommandArgs(command, args) {
         if (npxCommand.startsWith('create-next-app')) {
             return validateCreateNextAppArgs(args.slice(1), config);
         }
+
+        // For create-vite, validate remaining arguments
+        if (npxCommand.startsWith('create-vite')) {
+            return validateCreateViteArgs(args.slice(1), config);
+        }
     }
 
     for (const arg of args) {
@@ -208,6 +217,78 @@ function validateCreateNextAppArgs(args, config) {
     }
 
     return true;
+}
+
+/**
+ * Validate create-vite specific arguments
+ * @param {string[]} args - Arguments after create-vite command
+ * @param {Object} config - NPX command configuration
+ * @returns {boolean} True if arguments are valid
+ */
+function validateCreateViteArgs(args, config) {
+    const VALID_TEMPLATES = ['react', 'react-ts', 'react-swc', 'react-swc-ts'];
+
+    for (let i = 0; i < args.length; i++) {
+        const arg = args[i];
+
+        // Check for shell metacharacters
+        if (/[;&|`$(){}[\]<>\\]/.test(arg)) {
+            logger.error(`Argument contains shell metacharacters: ${arg}`);
+            return false;
+        }
+
+        if (arg.startsWith('-')) {
+            // It's a flag
+            if (!config.allowedFlags.includes(arg)) {
+                logger.error(`Flag not in allowlist: ${arg}`);
+                return false;
+            }
+
+            // Handle --template flag with value
+            if (arg === '--template' && i + 1 < args.length) {
+                const template = args[i + 1];
+                if (!VALID_TEMPLATES.includes(template)) {
+                    logger.error(`Invalid Vite template: ${template}`);
+                    return false;
+                }
+                i++; // Skip the next argument as it's the value for this flag
+            }
+        } else {
+            // It's likely a project name - validate it
+            if (!validatePackageName(arg) && !/^[a-zA-Z0-9-_]+$/.test(arg)) {
+                logger.error(`Invalid project name: ${arg}`);
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+
+/**
+ * Validate and sanitize Vite project creation arguments
+ * @param {string} projectName - Project name
+ * @param {Object} options - Vite options
+ * @returns {string[]} Sanitized arguments array
+ */
+export function sanitizeViteArgs(projectName, options = {}) {
+    const sanitizedName = sanitizeProjectName(projectName);
+
+    const args = ['create-vite@latest', sanitizedName];
+
+    // Determine the template based on TypeScript and SWC preferences
+    let template = 'react';
+    if (options.typescript && options.swc) {
+        template = 'react-swc-ts';
+    } else if (options.typescript) {
+        template = 'react-ts';
+    } else if (options.swc) {
+        template = 'react-swc';
+    }
+
+    args.push('--template', template);
+
+    return args;
 }
 
 /**

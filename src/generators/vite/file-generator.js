@@ -4,9 +4,11 @@ import { generateSimpleStructure } from './structures/simple-structure.js';
 import { generateFeatureBasedStructure } from './structures/feature-based-structure.js';
 import { generateDomainDrivenStructure } from './structures/domain-driven-structure.js';
 
-export async function generateProjectFiles(projectPath, answers) {
-  // Create public directory with index.html
-  await generatePublicFiles(projectPath, answers);
+export async function generateProjectFiles(projectPath, answers, options = {}) {
+  // Skip public file generation in overlay mode (create-vite already provides index.html and vite.svg)
+  if (!options.overlay) {
+    await generatePublicFiles(projectPath, answers);
+  }
 
   // Generate API library files for React-based apps
   await generateApiLibraryFiles(projectPath, answers);
@@ -497,29 +499,29 @@ export const queryClient = createQueryClient();
 
 // Common query keys factory
 export const queryKeys = {
-  all: ['api'] as const,
-  lists: () => [...queryKeys.all, 'list'] as const,
-  list: (filters) => [...queryKeys.lists(), { filters }] as const,
-  details: () => [...queryKeys.all, 'detail'] as const,
-  detail: (id) => [...queryKeys.details(), id] as const,
+  all: ['api'],
+  lists: () => [...queryKeys.all, 'list'],
+  list: (filters) => [...queryKeys.lists(), { filters }],
+  details: () => [...queryKeys.all, 'detail'],
+  detail: (id) => [...queryKeys.details(), id],
 };
 
 // Utility functions for common query patterns
 export const queryUtils = {
   // Invalidate all queries
   invalidateAll: () => queryClient.invalidateQueries(),
-  
+
   // Invalidate specific query
   invalidateQuery: (queryKey) => queryClient.invalidateQueries({ queryKey }),
-  
+
   // Set query data
   setQueryData: (queryKey, data) => queryClient.setQueryData(queryKey, data),
-  
+
   // Get query data
   getQueryData: (queryKey) => queryClient.getQueryData(queryKey),
-  
+
   // Prefetch query
-  prefetchQuery: (queryKey, queryFn, options = {}) => 
+  prefetchQuery: (queryKey, queryFn, options = {}) =>
     queryClient.prefetchQuery({ queryKey, queryFn, ...options }),
 };
 

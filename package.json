@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "bin": {
-    "build-app-with": "./bin/build-app-with.js"
+    "build-app-with": "bin/build-app-with.js"
   },
   "scripts": {
     "start": "node ./bin/cli.js",
@@ -43,7 +43,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/imnayakshubham/build-app-with.git"
+    "url": "git+https://github.com/imnayakshubham/build-app-with.git"
   },
   "bugs": {
     "url": "https://github.com/imnayakshubham/build-app-with/issues"
@@ -81,7 +81,6 @@
     "README.md",
     "LICENSE"
   ],
-  "preferGlobal": true,
   "publishConfig": {
     "access": "public"
   }

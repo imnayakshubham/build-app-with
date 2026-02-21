@@ -8,7 +8,7 @@ import path from 'path';
 import inquirer from 'inquirer';
 import { logger } from '../../core/logger.js';
 import { handleError, validateProjectName, validateFramework } from '../../core/error-handler.js';
-import { generateSimpleExpressProject } from './simple-generator.js';
+import { generateExpressProject } from './project-generator.js';
 import { getExpressPrompts } from './prompts.js';
 import { FRAMEWORKS } from '../../types/index.js';
 
@@ -25,8 +25,17 @@ export async function generateExpressApp(projectPath, rawAnswers) {
         const expressAnswers = await inquirer.prompt(expressPrompts);
         logger.debug('Express prompts completed');
 
-        // Merge answers asynchronously
-        const answers = { ...rawAnswers, ...expressAnswers };
+        // Merge answers with defaults for missing fields
+        const answers = {
+            features: [],
+            authStrategy: 'none',
+            database: 'none',
+            projectStructure: 'simple',
+            includeTests: false,
+            includeDocker: false,
+            ...rawAnswers,
+            ...expressAnswers
+        };
         logger.debug('Answers merged successfully');
 
         // Create project directory
@@ -36,7 +45,7 @@ export async function generateExpressApp(projectPath, rawAnswers) {
 
         // Generate Express project structure
         const spinner = logger.startSpinner('Generating Express.js project structure...');
-        await generateSimpleExpressProject(projectPath, answers);
+        await generateExpressProject(projectPath, answers);
         logger.stopSpinner(true, 'Express project generated successfully!');
 
         // Post-setup instructions

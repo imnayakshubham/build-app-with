@@ -2,7 +2,8 @@
  * Generate package.json for Express.js project
  */
 
-import { FRAMEWORKS, DATABASES, AUTH_STRATEGIES } from '../../../types/index.js';
+import { DATABASES, AUTH_STRATEGIES, FEATURES } from '../../../types/index.js';
+import { featurePackageMap } from '../../../config/package-mappings.js';
 
 export function generatePackageJson(answers) {
     const basePackage = {
@@ -32,16 +33,65 @@ export function generatePackageJson(answers) {
         engines: {
             node: '>=18.0.0'
         },
-        dependencies: {},
-        devDependencies: {}
+        dependencies: {
+            'express': '^4.18.2'
+        },
+        devDependencies: {
+            'nodemon': '^3.0.2'
+        }
     };
 
-    // Add database-specific scripts
+    // Add database-specific scripts and dependencies
     if (answers.database === DATABASES.POSTGRESQL || answers.database === DATABASES.SQLITE) {
         basePackage.scripts['db:generate'] = 'prisma generate';
         basePackage.scripts['db:push'] = 'prisma db push';
         basePackage.scripts['db:migrate'] = 'prisma migrate dev';
         basePackage.scripts['db:studio'] = 'prisma studio';
+        basePackage.dependencies['@prisma/client'] = '^5.7.1';
+        basePackage.devDependencies['prisma'] = '^5.7.1';
+    } else if (answers.database === DATABASES.MONGODB) {
+        basePackage.dependencies['mongoose'] = '^8.0.3';
+    } else if (answers.database === DATABASES.MYSQL) {
+        basePackage.dependencies['sequelize'] = '^6.35.2';
+        basePackage.dependencies['mysql2'] = '^3.6.5';
+    }
+
+    // Add authentication dependencies
+    if (answers.authStrategy === AUTH_STRATEGIES.JWT) {
+        basePackage.dependencies['jsonwebtoken'] = '^9.0.2';
+        basePackage.dependencies['bcryptjs'] = '^2.4.3';
+    } else if (answers.authStrategy === AUTH_STRATEGIES.SESSION) {
+        basePackage.dependencies['passport'] = '^0.7.0';
+        basePackage.dependencies['passport-local'] = '^1.0.0';
+        basePackage.dependencies['express-session'] = '^1.17.3';
+    } else if (answers.authStrategy === AUTH_STRATEGIES.OAUTH) {
+        basePackage.dependencies['passport'] = '^0.7.0';
+        basePackage.dependencies['passport-local'] = '^1.0.0';
+        basePackage.dependencies['express-session'] = '^1.17.3';
+    }
+
+    // Add feature dependencies
+    const features = answers.features || [];
+    for (const feature of features) {
+        const featureInfo = featurePackageMap[feature];
+        if (featureInfo) {
+            if (featureInfo.deps) {
+                for (const dep of featureInfo.deps) {
+                    basePackage.dependencies[dep] = 'latest';
+                }
+            }
+            if (featureInfo.devDeps) {
+                for (const dep of featureInfo.devDeps) {
+                    basePackage.devDependencies[dep] = 'latest';
+                }
+            }
+        }
+    }
+
+    // Add testing dependencies
+    if (answers.includeTests) {
+        basePackage.devDependencies['jest'] = '^29.7.0';
+        basePackage.devDependencies['supertest'] = '^6.3.3';
     }
 
     // Remove undefined scripts

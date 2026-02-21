@@ -23,7 +23,17 @@ export async function generateFastifyApp(projectPath, rawAnswers) {
         const fastifyPrompts = getFastifyPrompts(rawAnswers);
         const fastifyAnswers = await inquirer.prompt(fastifyPrompts);
 
-        const answers = { ...rawAnswers, ...fastifyAnswers };
+        // Merge answers with defaults for missing fields
+        const answers = {
+            features: [],
+            authStrategy: 'none',
+            database: 'none',
+            projectStructure: 'simple',
+            includeTests: false,
+            includeDocker: false,
+            ...rawAnswers,
+            ...fastifyAnswers
+        };
 
         // Create project directory
         await fs.ensureDir(projectPath);

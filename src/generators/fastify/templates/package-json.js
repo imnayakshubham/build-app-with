@@ -2,7 +2,7 @@
  * Generate package.json for Fastify project
  */
 
-import { FRAMEWORKS, DATABASES, AUTH_STRATEGIES } from '../../../types/index.js';
+import { DATABASES, AUTH_STRATEGIES } from '../../../types/index.js';
 
 export function generatePackageJson(answers) {
     const basePackage = {
@@ -34,16 +34,74 @@ export function generatePackageJson(answers) {
         engines: {
             node: '>=18.0.0'
         },
-        dependencies: {},
-        devDependencies: {}
+        dependencies: {
+            'fastify': '^4.25.2'
+        },
+        devDependencies: {
+            'nodemon': '^3.0.2'
+        }
     };
 
-    // Add database-specific scripts
+    // Add database-specific scripts and dependencies
     if (answers.database === DATABASES.POSTGRESQL || answers.database === DATABASES.SQLITE) {
         basePackage.scripts['db:generate'] = 'prisma generate';
         basePackage.scripts['db:push'] = 'prisma db push';
         basePackage.scripts['db:migrate'] = 'prisma migrate dev';
         basePackage.scripts['db:studio'] = 'prisma studio';
+        basePackage.dependencies['@prisma/client'] = '^5.7.1';
+        basePackage.devDependencies['prisma'] = '^5.7.1';
+    } else if (answers.database === DATABASES.MONGODB) {
+        basePackage.dependencies['mongoose'] = '^8.0.3';
+    } else if (answers.database === DATABASES.MYSQL) {
+        basePackage.dependencies['sequelize'] = '^6.35.2';
+        basePackage.dependencies['mysql2'] = '^3.6.5';
+    }
+
+    // Add authentication dependencies
+    if (answers.authStrategy === AUTH_STRATEGIES.JWT) {
+        basePackage.dependencies['@fastify/jwt'] = '^8.0.0';
+        basePackage.dependencies['bcryptjs'] = '^2.4.3';
+    } else if (answers.authStrategy === AUTH_STRATEGIES.SESSION) {
+        basePackage.dependencies['@fastify/session'] = '^10.7.0';
+        basePackage.dependencies['@fastify/cookie'] = '^9.2.0';
+    } else if (answers.authStrategy === AUTH_STRATEGIES.OAUTH) {
+        basePackage.dependencies['@fastify/passport'] = '^2.4.0';
+        basePackage.dependencies['@fastify/session'] = '^10.7.0';
+        basePackage.dependencies['@fastify/cookie'] = '^9.2.0';
+    }
+
+    // Add feature dependencies
+    const features = answers.features || [];
+    if (features.includes('cors')) {
+        basePackage.dependencies['@fastify/cors'] = '^9.0.1';
+    }
+    if (features.includes('rate-limit')) {
+        basePackage.dependencies['@fastify/rate-limit'] = '^9.0.1';
+    }
+    if (features.includes('swagger')) {
+        basePackage.dependencies['@fastify/swagger'] = '^8.12.0';
+        basePackage.dependencies['@fastify/swagger-ui'] = '^2.0.1';
+    }
+    if (features.includes('dotenv')) {
+        basePackage.dependencies['dotenv'] = '^16.3.1';
+    }
+    if (features.includes('morgan')) {
+        basePackage.dependencies['pino-pretty'] = '^10.3.1';
+    }
+    if (features.includes('winston')) {
+        basePackage.dependencies['winston'] = '^3.11.0';
+    }
+    if (features.includes('websocket')) {
+        basePackage.dependencies['@fastify/websocket'] = '^9.0.0';
+    }
+    if (features.includes('graphql')) {
+        basePackage.dependencies['mercurius'] = '^14.0.0';
+    }
+
+    // Add testing dependencies
+    if (answers.includeTests) {
+        basePackage.devDependencies['jest'] = '^29.7.0';
+        basePackage.devDependencies['supertest'] = '^6.3.3';
     }
 
     // Remove undefined scripts

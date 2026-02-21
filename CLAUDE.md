@@ -6,103 +6,98 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### Development and Testing
 ```bash
-# Run the CLI tool in development mode
-npm run dev
-
-# Start the CLI tool
-npm start
-
-# Run tests
-npm test
-
-# Run tests in watch mode
-npm run test:watch
-
-# Run tests with coverage
-npm run test:coverage
-
-# Run core tests only
-npm run test:core
-
-# Lint code
-npm run lint
-
-# Lint and fix issues
-npm run lint:fix
-
-# Format code
-npm run format
-
-# Version management (for maintainers)
-npm run version:patch   # Bug fixes (2.0.0 → 2.0.1)
-npm run version:minor   # New features (2.0.0 → 2.1.0)
-npm run version:major   # Breaking changes (2.0.0 → 3.0.0)
+npm run dev              # Run CLI from source (bin/cli.js → src/)
+npm start                # Same as dev
+npm run build            # Webpack bundle to dist/build-app-with.cjs
+npm test                 # Run all tests
+npm run test:core        # Run only core/ tests (jest --testPathPattern=core)
+npm run test:watch       # Jest in watch mode
+npm run test:coverage    # Jest with coverage report
+npm run lint             # ESLint check
+npm run lint:fix         # ESLint auto-fix
+npm run format           # Prettier format src/
 ```
 
-### Testing Structure
-- Unit tests: `src/__tests__/core/` - Test core utilities (logger, error handling)
-- E2E tests: `src/__tests__/e2e/` - Test CLI integration and framework generation
-- Test setup: `src/__tests__/setup.js` - Jest configuration with mocked dependencies
-- All tests use comprehensive mocking for fs-extra, inquirer, ora, chalk, and execa
+### Running a Single Test
+```bash
+npx jest src/__tests__/core/logger.test.js        # By file path
+npx jest --testPathPattern="security-fixes"        # By pattern
+npx jest --testNamePattern="should log info"       # By test name
+```
+
+### Publishing (maintainers)
+```bash
+npm run version:patch    # Bump patch, build, test, publish, push tags
+npm run version:minor    # Bump minor
+npm run version:major    # Bump major
+```
+The `prepublishOnly` script runs `npm run build && npm run test:core && npm run lint` automatically.
 
 ## Architecture
 
-### Core Application Flow
-The CLI follows a linear orchestration pattern in `src/create-app.js`:
-1. **Prompting Phase**: Collect user preferences via `src/prompts/index.js`
-2. **Name Resolution**: Handle project name conflicts with incremental naming (`my-app`, `my-app-1`, etc.)
-3. **Directory Management**: Create project directory (except Next.js which handles its own)
-4. **Framework Generation**: Route to appropriate generator based on framework choice
-5. **File Management**: Ensure .gitignore and .env files exist with proper content
-6. **Dependency Installation**: Auto-detect and use npm/yarn/pnpm via `src/utils/dependencies.js`
+### Dual Entry Point System
+- **`bin/cli.js`** — Development entry (`npm run dev`). Imports directly from `src/create-app.js`.
+- **`bin/build-app-with.js`** — Published npm binary (`npx build-app-with`). Imports from `dist/build-app-with.cjs` (the webpack bundle). The `src/` directory is not published.
+- Both parse `--help`, `--version`, and an optional positional project-name argument, then call `createApp(projectName)`.
 
-### Framework Generator Architecture
-Each generator follows a consistent two-phase pattern:
-- **Phase 1**: Framework-specific prompts (auth, database, features) via `prompts.js`
-- **Phase 2**: Project structure generation via dedicated generator files
+### Webpack Build
+- Entry: `src/create-app.js` → Output: `dist/build-app-with.cjs` (CommonJS)
+- External dependencies (not bundled): `inquirer`, `fs-extra`, `execa`, `chalk`, `ora`
+- Minification disabled for readable output
 
-**Generator Structure:**
-- `src/generators/{framework}/index.js` - Main entry point with error handling
-- `src/generators/{framework}/prompts.js` - Framework-specific questions
-- `src/generators/{framework}/project-generator.js` - Core generation logic
-- `src/generators/{framework}/templates/` - File templates for different components
+### Core Application Flow (`src/create-app.js`)
+1. **Prompting**: `getPrompts(cliProjectName)` → `inquirer.prompt()` → `finalizeAnswers()`
+2. **Path Resolution**: `generateUniqueProjectPath()` — auto-increments name on conflict (`my-app` → `my-app-1`)
+3. **Directory Creation**: `safeCreateDirectory()` — skipped for Next.js (create-next-app handles it)
+4. **Generator Routing**: Dispatches to framework-specific generator based on `answers.framework`
+5. **Post-generation**: Ensures `.gitignore` includes `.env`, creates `.env` if missing
+6. **Dependency Install**: Runs if user opted in via `answers.postSetup`
 
-### Prompting System Architecture
-The prompting system in `src/prompts/index.js` uses a conditional flow:
-- **Primary Prompts**: Framework selection, setup type (default/customize), project name
-- **Conditional Prompts**: Only shown when `setupType === 'customize'`
-- **Post-Processing**: `finalizeAnswers()` enforces framework-specific rules (e.g., Next.js always uses TypeScript)
+### Framework Generators
 
-### Core Utilities
-- **`src/core/logger.js`** - Centralized logging with ora spinner integration and environment-aware output
-- **`src/core/error-handler.js`** - Validation and error handling with user-friendly messages
-- **`src/core/package-manager.js`** - Auto-detection of npm/yarn/pnpm and dependency management
-- **`src/utils/`** - Helper utilities for messages, credits, dependencies, and answer processing
+Four generators under `src/generators/`:
 
-### Project Structure Generation
-Vite generator supports three architectural patterns:
-- **Simple**: Basic src/components/pages structure
-- **Feature-based**: Organized by feature modules (auth, dashboard, etc.)
-- **Domain-driven**: Advanced architecture with domains, services, and repositories
+| Generator | Entry Point | Approach |
+|-----------|------------|----------|
+| `vite/` | `vite-project-generator.js` | Custom file generation with config generators |
+| `nextjs/` | `nextjs-generator.js` | Runs `create-next-app` via `secureExec`, then overlays files |
+| `express/` | `index.js` | Two-phase: prompts then template-based generation |
+| `fastify/` | `index.js` | Same two-phase pattern as Express |
 
-### Template System
-- Templates are JavaScript functions that return file content strings
-- Dynamic content generation based on user answers (TypeScript/JavaScript, CSS framework, etc.)
-- Consistent file naming and structure across all generators
+Each backend generator (express/fastify) follows: `index.js` → `prompts.js` → `project-generator.js` → `templates/`
 
-### Unique Implementation Details
-- **Conflict Resolution**: Automatic project name incrementing with user notification
-- **Framework Detection**: Next.js uses `create-next-app`, others use custom file generation
-- **Environment Files**: Automatic .env creation and .gitignore management for all frameworks
-- **Credit System**: Tracks generated components via `src/utils/credits.js`
-- **Error Recovery**: Comprehensive validation and user-friendly error messages throughout
+Vite generator has sub-modules for configs (`vite-config-generator.js`, `tailwind-config-generator.js`, `eslint-config-generator.js`), components, styles, and three structure patterns (simple, feature-based, domain-driven) under `structures/`.
+
+### Prompting System (`src/prompts/index.js`)
+
+Three exported functions:
+- **`getPrompts(cliProjectName)`** — Builds ordered prompt list with conditional `when` guards
+- **`getFeaturePrompts(currentAnswers)`** — 7 feature categories (routing, state, forms, animations, drag-drop, UI libs, utilities), gated by `setupType === 'customize'` or vite preset
+- **`finalizeAnswers(answers)`** — Post-processing: forces TypeScript for Next.js, applies preset features, maps preset to setupType
+
+**Vite Preset System**: Users choose a preset (starter/standard/full/custom) that determines default features. Defined in `src/constants/vite-features.js` with `PRESET_FEATURES` mapping, `DEPENDENCY_VERSIONS` for pinned versions, and `FEATURE_PACKAGES` for npm package names.
+
+### Security Layer
+- **`src/utils/path-security.js`** — Project name validation, path traversal prevention, safe directory creation
+- **`src/utils/secure-exec.js`** — Command injection prevention, argument sanitization for `execa` calls
+- **`src/utils/security.js`** — Secure secret generation for JWT, database passwords, API keys
+
+### Key Utility Files
+- **`src/config/package-mappings.js`** — Centralized framework/feature → npm package mapping
+- **`src/constants/vite-features.js`** — Presets, feature constants, dependency versions, package mappings
+- **`src/utils/answer-helpers.js`** — `mergeFeatures()`, `applyPresetFeatures()`, `presetToSetupType()`
+- **`src/utils/dependency-helpers.js`** — `getFeaturePackages()`, `addFeatureDependencies()`
+- **`src/generators/package-json-generator.js`** — Shared `package.json` builder for Vite projects
+
+### Testing
+- Tests in `src/__tests__/` — `core/` (unit), `e2e/` (integration), `security/` (validation)
+- Global mocks in `src/__tests__/setup.js`: fs-extra, inquirer, ora, chalk, execa, console.*, process.exit
+- Jest uses babel-jest to transform ESM → CJS (configured in `babel.config.js`)
+- `transformIgnorePatterns` allows ESM deps (chalk, ora, inquirer, execa, fs-extra) through Babel
 
 ## Development Notes
 
-- ES modules throughout (type: "module" in package.json)
-- Node.js 18+ and npm 8+ minimum requirements
-- All async operations use proper error handling with try/catch
-- Generators follow consistent patterns for maintainability
-- Template functions are pure and testable
-- CLI uses inquirer for prompts, ora for spinners, chalk for colors
-- Project name validation ensures filesystem compatibility
+- ES modules throughout (`"type": "module"` in package.json)
+- Node.js 18+ and npm 8+ required
+- Templates are JS functions returning file content strings, with dynamic content based on user answers
+- `index.js` at root is a placeholder (`"main"` in package.json) — not used by the CLI
