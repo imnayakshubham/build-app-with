@@ -10,19 +10,21 @@ export default {
   entry: './src/create-app.js',
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: 'build-app-with.cjs',
+    filename: 'build-app-with.mjs',
     library: {
-      type: 'commonjs2'
+      type: 'module'
     }
   },
-  externals: {
-    // Keep npm packages as external dependencies
-    'inquirer': 'commonjs inquirer',
-    'fs-extra': 'commonjs fs-extra',
-    'execa': 'commonjs execa',
-    'chalk': 'commonjs chalk',
-    'ora': 'commonjs ora'
+  experiments: {
+    outputModule: true
   },
+  externals: [
+    'inquirer',
+    'fs-extra',
+    'execa',
+    'chalk',
+    'ora'
+  ],
   resolve: {
     extensions: ['.js', '.json'],
     modules: ['node_modules', 'src'],

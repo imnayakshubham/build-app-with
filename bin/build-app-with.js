@@ -1,15 +1,13 @@
 #!/usr/bin/env node
 
 // Bundled CLI executable
+import { createApp } from '../dist/build-app-with.mjs';
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
-const { createApp } = require('../dist/build-app-with.cjs');
 import path from 'path';
 import fs from 'fs';
 
-// Import logger from bundled package for error handling
-const bundledExports = require('../dist/build-app-with.cjs');
-const logger = bundledExports.logger || { error: console.error, isDevelopment: false };
+const logger = { error: console.error, isDevelopment: false };
 
 // Simple welcome message function
 function welcomeMessage() {
