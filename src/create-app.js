@@ -2,6 +2,7 @@ import inquirer from 'inquirer';
 import fs from 'fs-extra';
 import { getInitialPrompts, getCustomizationPrompts, finalizeAnswers } from './prompts/index.js';
 import { generateViteProject, createViteBase } from './generators/vite/vite-project-generator.js';
+import { createRsbuildBase, generateRsbuildProject } from './generators/rsbuild/rsbuild-project-generator.js';
 import { generateNextJSProject } from './generators/nextjs/nextjs-generator.js';
 import { generateExpressApp } from './generators/express/index.js';
 import { generateFastifyApp } from './generators/fastify/index.js';
@@ -28,6 +29,7 @@ export async function createApp(cliProjectName = null) {
 
     const isNext = initialAnswers.framework === 'nextjs';
     const isVite = initialAnswers.framework === 'vite-react';
+    const isRsbuild = initialAnswers.framework === 'rsbuild-react';
 
     // === Stage 2: Run official scaffold for frameworks that use CLI tools ===
     if (isVite) {
@@ -44,6 +46,19 @@ export async function createApp(cliProjectName = null) {
         logger.stopSpinner(false, 'Failed to create Vite project');
         throw error;
       }
+    } else if (isRsbuild) {
+      if (initialAnswers.typescript === undefined) {
+        initialAnswers.typescript = true;
+      }
+
+      const spinner = logger.startSpinner('Creating Rsbuild project...');
+      try {
+        await createRsbuildBase(projectPath, initialAnswers);
+        logger.stopSpinner(true, 'Rsbuild project scaffold created!');
+      } catch (error) {
+        logger.stopSpinner(false, 'Failed to create Rsbuild project');
+        throw error;
+      }
     } else if (!isNext) {
       // For Express/Fastify, create directory ourselves
       logger.debug(`Creating project directory: ${projectPath}`);
@@ -53,7 +68,7 @@ export async function createApp(cliProjectName = null) {
     // Next.js: directory creation is handled by create-next-app inside generateNextJSProject
 
     // Derive setupType from vitePreset so customization prompts can gate on it
-    if (isVite && initialAnswers.vitePreset) {
+    if ((isVite || isRsbuild) && initialAnswers.vitePreset) {
       initialAnswers.setupType = presetToSetupType(initialAnswers.vitePreset);
     }
 
@@ -70,6 +85,15 @@ export async function createApp(cliProjectName = null) {
       const spinner = logger.startSpinner('Customizing project...');
       try {
         await generateViteProject(projectPath, answers);
+        logger.stopSpinner(true, 'Project customized successfully!');
+      } catch (error) {
+        logger.stopSpinner(false, 'Failed to customize project');
+        throw error;
+      }
+    } else if (isRsbuild) {
+      const spinner = logger.startSpinner('Customizing project...');
+      try {
+        await generateRsbuildProject(projectPath, answers);
         logger.stopSpinner(true, 'Project customized successfully!');
       } catch (error) {
         logger.stopSpinner(false, 'Failed to customize project');

@@ -50,7 +50,9 @@ const ALLOWED_COMMANDS = {
             'create-next-app@latest',
             'create-next-app',
             'create-vite@latest',
-            'create-vite'
+            'create-vite',
+            'create-rsbuild@latest',
+            'create-rsbuild'
         ],
         allowedFlags: [
             '--version', '--help',
@@ -143,6 +145,11 @@ export function validateCommandArgs(command, args) {
         // For create-vite, validate remaining arguments
         if (npxCommand.startsWith('create-vite')) {
             return validateCreateViteArgs(args.slice(1), config);
+        }
+
+        // For create-rsbuild, validate remaining arguments
+        if (npxCommand.startsWith('create-rsbuild')) {
+            return validateCreateRsbuildArgs(args.slice(1), config);
         }
     }
 
@@ -263,6 +270,66 @@ function validateCreateViteArgs(args, config) {
     }
 
     return true;
+}
+
+/**
+ * Validate create-rsbuild specific arguments
+ * @param {string[]} args - Arguments after create-rsbuild command
+ * @param {Object} config - NPX command configuration
+ * @returns {boolean} True if arguments are valid
+ */
+function validateCreateRsbuildArgs(args, config) {
+    const VALID_TEMPLATES = ['react', 'react-ts'];
+
+    for (let i = 0; i < args.length; i++) {
+        const arg = args[i];
+
+        // Check for shell metacharacters
+        if (/[;&|`$(){}[\]<>\\]/.test(arg)) {
+            logger.error(`Argument contains shell metacharacters: ${arg}`);
+            return false;
+        }
+
+        if (arg.startsWith('-')) {
+            // It's a flag
+            if (!config.allowedFlags.includes(arg)) {
+                logger.error(`Flag not in allowlist: ${arg}`);
+                return false;
+            }
+
+            // Handle --template flag with value
+            if (arg === '--template' && i + 1 < args.length) {
+                const template = args[i + 1];
+                if (!VALID_TEMPLATES.includes(template)) {
+                    logger.error(`Invalid Rsbuild template: ${template}`);
+                    return false;
+                }
+                i++; // Skip the next argument as it's the value for this flag
+            }
+        } else {
+            // It's likely a project name - validate it
+            if (!validatePackageName(arg) && !/^[a-zA-Z0-9-_]+$/.test(arg)) {
+                logger.error(`Invalid project name: ${arg}`);
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+
+/**
+ * Validate and sanitize Rsbuild project creation arguments
+ * @param {string} projectName - Project name
+ * @param {Object} options - Rsbuild options
+ * @returns {string[]} Sanitized arguments array
+ */
+export function sanitizeRsbuildArgs(projectName, options = {}) {
+    const sanitizedName = sanitizeProjectName(projectName);
+    const args = ['create-rsbuild@latest', sanitizedName];
+    const template = options.typescript ? 'react-ts' : 'react';
+    args.push('--template', template);
+    return args;
 }
 
 /**

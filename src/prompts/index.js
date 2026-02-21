@@ -2,6 +2,8 @@
 import { VITE_PRESETS } from '../constants/vite-features.js';
 import { applyPresetFeatures, presetToSetupType } from '../utils/answer-helpers.js';
 
+const isReactFrontend = (fw) => fw === 'vite-react' || fw === 'rsbuild-react';
+
 export function getFeaturePrompts(currentAnswers) {
     return [
         {
@@ -14,7 +16,7 @@ export function getFeaturePrompts(currentAnswers) {
             when: (default_answers) => {
                 const answers = default_answers ?? currentAnswers
                 return (answers.setupType === 'customize' || answers.allowCustomFeatures) &&
-                    answers.framework === 'vite-react'
+                    isReactFrontend(answers.framework)
             }
         },
         {
@@ -130,6 +132,7 @@ export function getInitialPrompts(cliProjectName = null) {
             choices: [
                 { name: 'Next.js (React Full-stack)', value: 'nextjs' },
                 { name: 'Vite + React (Frontend)', value: 'vite-react' },
+                { name: 'Rsbuild + React (Frontend)', value: 'rsbuild-react' },
                 { name: 'Express.js (Node.js Backend)', value: 'express' },
                 { name: 'Fastify (Node.js Backend)', value: 'fastify' }
             ]
@@ -146,7 +149,7 @@ export function getInitialPrompts(cliProjectName = null) {
                 { name: '⚙️  Custom - Advanced (choose features manually)', value: 'custom' }
             ],
             default: 1, // Standard is default
-            when: (answers) => answers.framework === 'vite-react'
+            when: (answers) => isReactFrontend(answers.framework)
         },
         // 2b. Setup type for other frameworks
         {
@@ -157,7 +160,7 @@ export function getInitialPrompts(cliProjectName = null) {
                 { name: 'Default (Quick start with recommended settings)', value: 'default' },
                 { name: 'Customize (Advanced: choose your own settings)', value: 'customize' }
             ],
-            when: (answers) => answers.framework !== 'vite-react'
+            when: (answers) => !isReactFrontend(answers.framework)
         }
     ];
 
@@ -217,8 +220,8 @@ export function getCustomizationPrompts(initialAnswers) {
             ],
             when: (answers) => {
                 const merged = { ...initialAnswers, ...answers };
-                // For Vite: show for non-Starter presets
-                if (merged.framework === 'vite-react') {
+                // For React frontends (Vite/Rsbuild): show for non-Starter presets
+                if (isReactFrontend(merged.framework)) {
                     return merged.vitePreset !== 'starter';
                 }
                 // Only show CSS framework for frontend frameworks
@@ -243,7 +246,7 @@ export function getCustomizationPrompts(initialAnswers) {
             default: 'clerk',
             when: (answers) => {
                 const merged = { ...initialAnswers, ...answers };
-                return merged.setupType === 'customize' && ['nextjs', 'vite-react'].includes(merged.framework);
+                return merged.setupType === 'customize' && ['nextjs', 'vite-react', 'rsbuild-react'].includes(merged.framework);
             }
         },
         {
@@ -257,7 +260,7 @@ export function getCustomizationPrompts(initialAnswers) {
             ],
             when: (answers) => {
                 const merged = { ...initialAnswers, ...answers };
-                return merged.setupType === 'customize' && merged.framework === 'vite-react';
+                return merged.setupType === 'customize' && isReactFrontend(merged.framework);
             }
         },
         // ESLint and Prettier prompts hidden per user request
@@ -285,14 +288,14 @@ export function getCustomizationPrompts(initialAnswers) {
         }
     ];
 
-    // Add feature prompts for Vite + React users
+    // Add feature prompts for React frontend users (Vite + Rsbuild)
     const featurePrompts = getFeaturePrompts();
     featurePrompts.forEach(prompt => {
         const originalWhen = prompt.when;
         prompt.when = (answers) => {
             const merged = { ...initialAnswers, ...answers };
-            // Show for Vite + React framework
-            if (merged.framework === 'vite-react') {
+            // Show for React frontend frameworks (Vite / Rsbuild)
+            if (isReactFrontend(merged.framework)) {
                 // For Custom preset: show all feature prompts
                 if (merged.vitePreset === 'custom') {
                     return originalWhen ? originalWhen(merged) : true;
@@ -334,8 +337,8 @@ export function getPrompts(cliProjectName = null) {
                 { name: 'Vanilla CSS', value: 'vanilla' }
             ],
             when: (answers) => {
-                // For Vite: show for non-Starter presets
-                if (answers.framework === 'vite-react') {
+                // For React frontends (Vite/Rsbuild): show for non-Starter presets
+                if (isReactFrontend(answers.framework)) {
                     return answers.vitePreset !== 'starter';
                 }
                 // Only show CSS framework for frontend frameworks
@@ -358,7 +361,7 @@ export function getPrompts(cliProjectName = null) {
                 { name: 'None', value: 'none' }
             ],
             default: 'clerk',
-            when: (answers) => answers.setupType === 'customize' && ['nextjs', 'vite-react'].includes(answers.framework)
+            when: (answers) => answers.setupType === 'customize' && ['nextjs', 'vite-react', 'rsbuild-react'].includes(answers.framework)
         },
         {
             type: 'list',
@@ -369,7 +372,7 @@ export function getPrompts(cliProjectName = null) {
                 { name: 'Simple (Basic structure)', value: 'simple' },
                 { name: 'Domain-driven (Advanced architecture)', value: 'domain-driven' }
             ],
-            when: (answers) => answers.setupType === 'customize' && answers.framework === 'vite-react'
+            when: (answers) => answers.setupType === 'customize' && isReactFrontend(answers.framework)
         },
         // ESLint and Prettier prompts hidden per user request
         {
@@ -401,7 +404,7 @@ export function getPrompts(cliProjectName = null) {
     featurePrompts.forEach(prompt => {
         const originalWhen = prompt.when;
         prompt.when = (answers) => {
-            if (answers.framework === 'vite-react') {
+            if (isReactFrontend(answers.framework)) {
                 if (answers.vitePreset === 'custom') {
                     return originalWhen ? originalWhen(answers) : true;
                 }
@@ -426,9 +429,13 @@ export function finalizeAnswers(answers) {
     if (answers.framework === 'vite-react' && answers.typescript === undefined) {
         answers.typescript = true;
     }
+    // Rsbuild always uses TypeScript
+    if (answers.framework === 'rsbuild-react') {
+        answers.typescript = true;
+    }
 
-    // Apply Vite preset features
-    if (answers.framework === 'vite-react' && answers.vitePreset) {
+    // Apply preset features for React frontends (Vite / Rsbuild)
+    if (isReactFrontend(answers.framework) && answers.vitePreset) {
         // Set setupType for compatibility with existing code
         answers.setupType = presetToSetupType(answers.vitePreset);
 

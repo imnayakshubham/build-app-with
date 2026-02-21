@@ -78,7 +78,7 @@ export function generatePackageJson(answers) {
   }
 
   // Automatically add TanStack Query and Axios for React-based apps
-  if (answers.framework === 'vite-react' || answers.framework === 'nextjs') {
+  if (answers.framework === 'vite-react' || answers.framework === 'rsbuild-react' || answers.framework === 'nextjs') {
     packageJson.dependencies['@tanstack/react-query'] = '^5.14.2';
     packageJson.dependencies['axios'] = '^1.6.2';
     packageJson.devDependencies['@tanstack/react-query-devtools'] = '^5.14.2';
@@ -273,14 +273,14 @@ export function getOverlayDependencies(answers) {
       'react-select': ['react-select'],
       'react-helmet': ['react-helmet-async'],
       'react-i18next': ['react-i18next', 'i18next'],
-      'storybook': ['@storybook/react', '@storybook/react-vite']
+      'storybook': ['@storybook/react', answers.framework === 'rsbuild-react' ? 'storybook-builder-rsbuild' : '@storybook/react-vite']
     };
     answers.utilities.forEach(util => {
       const pkgs = utilPkgMap[util] || [];
       pkgs.forEach(pkg => {
         const version = DEPENDENCY_VERSIONS[pkg] || 'latest';
         // Storybook packages are dev dependencies
-        if (pkg.startsWith('@storybook/')) {
+        if (pkg.startsWith('@storybook/') || pkg === 'storybook-builder-rsbuild') {
           devDependencies[pkg] = version;
         } else {
           dependencies[pkg] = version;

@@ -74,7 +74,7 @@ export function applyPresetFeatures(answers, preset) {
  * @returns {boolean} True if feature prompts should be shown
  */
 export function shouldShowFeaturePrompts(answers) {
-  return answers.framework === 'vite-react' &&
+  return (answers.framework === 'vite-react' || answers.framework === 'rsbuild-react') &&
     answers.vitePreset &&
     answers.vitePreset !== VITE_PRESETS.STARTER;
 }

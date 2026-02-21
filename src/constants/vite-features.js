@@ -138,7 +138,8 @@ export const DEPENDENCY_VERSIONS = {
     'react-i18next': '^14.0.0',
     'i18next': '^23.7.11',
     '@storybook/react': '^7.6.3',
-    '@storybook/react-vite': '^7.6.3'
+    '@storybook/react-vite': '^7.6.3',
+    'storybook-builder-rsbuild': '^0.1.1'
 };
 
 // Feature to Package Mapping

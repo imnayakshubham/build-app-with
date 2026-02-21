@@ -1,109 +1,222 @@
-# 🚀 Build App With
+# Build App With
 
-**The fastest way to create modern web applications**
+**Interactive CLI for scaffolding production-ready web applications**
 
-An interactive CLI tool that helps you quickly set up production-ready web applications with popular frameworks and features - no complex configuration needed.
+[![npm version](https://img.shields.io/npm/v/build-app-with.svg)](https://www.npmjs.com/package/build-app-with)
+[![license](https://img.shields.io/npm/l/build-app-with.svg)](LICENSE)
+[![node](https://img.shields.io/node/v/build-app-with.svg)](package.json)
 
-## 🎯 What can you build?
+Choose a framework, pick your features, and get a fully configured project in seconds — no manual setup required.
 
-### Frontend Applications
-- **⚛️ React with Next.js** - Full-stack React framework with server-side rendering
-- **⚡ React with Vite** - Lightning-fast React development with modern tooling
-
-### Backend APIs
-- **🚀 Express.js** - Traditional Node.js web server with extensive ecosystem
-- **⚡ Fastify** - High-performance Node.js framework for APIs
-
-## 🚀 Quick Start
-
-### ✨ Recommended: Use directly (no installation needed)
-```bash
-npx build-app-with my-awesome-app
-```
-
-## 💡 How it works
-
-1. **Choose your framework** - React (Next.js/Vite) or Node.js (Express/Fastify)
-2. **Pick your features** - TypeScript, CSS frameworks, authentication, databases, etc.
-3. **Get your app** - Complete project setup with all files configured and ready to run
-
-## ✨ Available Features
-
-### 🎨 Styling & UI
-- **CSS Frameworks**: Tailwind CSS, Bootstrap, Material-UI, Chakra UI, shadcn/ui
-- **Components**: Pre-built component libraries and design systems
-
-### 🔐 Authentication
-- **Options**: JWT tokens, NextAuth.js, Clerk, Auth0
-- **Ready-to-use**: Login/signup pages and user management
-
-### 💾 Databases
-- **SQL**: PostgreSQL, MySQL, SQLite
-- **NoSQL**: MongoDB
-- **ORMs**: Prisma, Mongoose, Sequelize
-
-### 🛠️ Development Tools
-- **TypeScript**: Full type safety and IntelliSense
-- **Testing**: Jest test framework with example tests
-- **Code Quality**: ESLint, Prettier, pre-commit hooks
-- **Docker**: Production-ready containerization
-
-### 🚀 Production Features
-- **Security**: CORS, Helmet, rate limiting, input validation
-- **Logging**: Structured logging with Winston
-- **API Docs**: Automatic Swagger/OpenAPI documentation
-- **Performance**: Optimized builds and caching
-
-## 📖 Example Usage
+## Quick Start
 
 ```bash
-# Create a Next.js app with TypeScript and Tailwind
-npx build-app-with my-next-app
+# Run directly (no install needed)
+npx build-app-with
 
-# Create an Express API with MongoDB and JWT auth
-npx build-app-with my-api
-
-# Create a Vite React app with all the bells and whistles
-npx build-app-with my-react-app
+# Or provide a project name upfront
+npx build-app-with my-app
 ```
 
-## 🏃‍♂️ Getting Started After Creation
-
-Once your project is created:
+**Prerequisites:** Node.js 18+ and npm 8+
 
 ```bash
-cd your-app-name
-npm install          # Install dependencies
-npm run dev          # Start development server
+npx build-app-with --help       # Show usage info
+npx build-app-with --version    # Show version
 ```
 
-**For Next.js/Vite**: Open http://localhost:3000
-**For Express/Fastify**: API runs on http://localhost:3000
+## Supported Frameworks
 
-## 🤝 Contributing
+| Framework | Type | Description |
+|-----------|------|-------------|
+| **Next.js** | Full-stack | SSR, API routes, App Router. TypeScript enforced. |
+| **Vite + React** | Frontend | Lightning-fast HMR with optional TypeScript. |
+| **Rsbuild + React** | Frontend | Rust-powered bundler (Rspack). TypeScript enforced. |
+| **Express.js** | Backend | Traditional Node.js web server with extensive middleware ecosystem. |
+| **Fastify** | Backend | High-performance Node.js API framework with plugin architecture. |
 
-We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+## Preset System
 
-## 📄 License
+When you choose **Vite + React** or **Rsbuild + React**, you pick a preset that determines default features:
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+| Preset | What's Included |
+|--------|----------------|
+| **Starter** | React + CSS only. Minimal starting point. |
+| **Standard** (default) | React Router DOM, Zustand, React Hook Form, React Icons, React Toastify |
+| **Full** | Everything in Standard + Framer Motion, React Table, React Helmet, react-i18next |
+| **Custom** | Choose every feature manually |
 
----
+Standard and Full presets let you add more features on top of the defaults. Next.js and backend frameworks use a Default / Customize toggle instead.
 
-**Why Build App With?**
-- ⚡ **Fast setup** - Get a complete project in under 2 minutes
-- 🏗️ **Production-ready** - Best practices and security built-in
-- 🎛️ **Flexible** - Choose exactly what you need, nothing you don't
-- 📚 **Well-documented** - Clear examples and helpful error messages
-- 🔄 **Up-to-date** - Always uses the latest stable versions
+## Features Reference
 
+### CSS Frameworks (Frontend)
 
-## 📞 Support
+Tailwind CSS, Bootstrap, Material-UI (MUI), Chakra UI, shadcn/ui, Mantine, Styled Components, or Vanilla CSS.
 
-- 🐛 Issues: [GitHub Issues](https://github.com/imnayakshubham/build-app-with/issues)
-- 💬 Discussions: [GitHub Discussions](https://github.com/imnayakshubham/build-app-with/discussions)
+Available for Vite, Rsbuild (all non-Starter presets), and Next.js (Customize mode).
 
-**Made with ❤️ by the [Build App With](https://github.com/imnayakshubham/build-app-with)**
+### Authentication
 
+**Frontend (Next.js, Vite, Rsbuild):**
+Clerk, NextAuth.js (Next.js only), Auth0, Firebase Auth
 
-**Start building your next great idea today!** 🚀
+**Backend (Express, Fastify):**
+JWT, Session-based, OAuth (Passport.js)
+
+### Project Structure
+
+**React frontends (Vite, Rsbuild):**
+
+| Structure | Description |
+|-----------|-------------|
+| Simple | Flat `src/` with basic components — good for prototypes |
+| Feature-based | Organized by feature (`features/auth/`, `features/dashboard/`) with shared hooks, services, and utils |
+| Domain-driven | Enterprise pattern with `domains/`, `shared/`, `app/`, and `infrastructure/` layers |
+
+**Express:**
+Simple, Modular (by feature), or Layered (Controller-Service-Repository)
+
+**Fastify:**
+Simple, Modular (by feature), or Plugin-based (Fastify plugins)
+
+### React Feature Categories
+
+These 7 categories are available for Vite + React and Rsbuild + React projects (Custom preset, or as additions to Standard/Full):
+
+| Category | Options |
+|----------|---------|
+| **Routing** | React Router DOM |
+| **State Management** | Redux Toolkit, Zustand, MobX, Recoil |
+| **Forms** | React Hook Form, Formik |
+| **Animations** | Framer Motion, React Spring, React Transition Group |
+| **Drag & Drop** | React DnD, React Beautiful DnD |
+| **UI Libraries** | Ant Design, Bootstrap, MUI, Chakra UI, shadcn/ui, Mantine |
+| **Utilities** | React Icons, React Toastify, React Table, React Select, React Helmet, react-i18next, Storybook |
+
+### Backend Features (Express / Fastify)
+
+| Category | Options |
+|----------|---------|
+| **Databases** | MongoDB, PostgreSQL, MySQL, SQLite |
+| **ORMs** | Mongoose (MongoDB), Prisma (PostgreSQL/SQLite), Sequelize (MySQL) |
+| **Security** | CORS, Helmet (Express), Rate limiting (Fastify) |
+| **Logging** | Morgan (request logging), Winston (structured logging) |
+| **Validation** | Express Validator / Fastify validation |
+| **API Docs** | Swagger / OpenAPI |
+| **Environment** | dotenv (.env support) |
+| **Testing** | Jest test setup with example tests |
+| **Docker** | Dockerfile and docker-compose configuration |
+
+Fastify also supports **WebSocket** and **GraphQL** as additional feature choices.
+
+## Interactive Flow
+
+Running `npx build-app-with` walks you through these steps:
+
+```
+? Choose your app framework:
+  > Next.js (React Full-stack)
+    Vite + React (Frontend)
+    Rsbuild + React (Frontend)
+    Express.js (Node.js Backend)
+    Fastify (Node.js Backend)
+
+? Choose your project setup:          # React frontends only
+  > Starter / Standard / Full / Custom
+
+? What is your project name?          # Skipped if provided via CLI
+  > my-app
+
+? Use TypeScript?                     # Vite Custom preset only
+  > Yes / No
+
+? Choose a CSS framework:             # Frontend frameworks
+  > Tailwind CSS / Bootstrap / MUI / ...
+
+? Choose authentication strategy:     # Customize mode
+  > Clerk / NextAuth.js / Auth0 / ...
+
+? Select Routing features:            # React feature categories
+? Select State Management features:
+? Select Forms features:
+  ...
+
+? After setup, do you want to:
+  [ ] Initialize a Git repository
+  [ ] Install dependencies
+  [ ] Run the development server
+```
+
+## After Project Creation
+
+```bash
+cd my-app
+npm install       # If not done during setup
+npm run dev       # Start development server
+```
+
+**Default ports:**
+
+| Framework | Port | URL |
+|-----------|------|-----|
+| Next.js | 3000 | http://localhost:3000 |
+| Vite + React | 5173 | http://localhost:5173 |
+| Rsbuild + React | 3000 | http://localhost:3000 |
+| Express.js | 3000 | http://localhost:3000 |
+| Fastify | 3000 | http://localhost:3000 |
+
+## Project Structure Example
+
+A typical **Vite + React** project with the **feature-based** structure:
+
+```
+my-app/
+├── public/
+├── src/
+│   ├── main.tsx
+│   ├── App.tsx
+│   ├── index.css
+│   ├── components/
+│   │   └── common/
+│   │       └── Header.tsx
+│   ├── features/
+│   │   ├── auth/
+│   │   │   └── Login.tsx
+│   │   └── dashboard/
+│   │       └── Dashboard.tsx
+│   ├── hooks/
+│   │   └── useLocalStorage.ts
+│   ├── services/
+│   │   └── api.ts
+│   ├── utils/
+│   │   └── helpers.ts
+│   └── types/
+│       └── index.ts
+├── .env
+├── .gitignore
+├── package.json
+├── vite.config.ts
+└── tsconfig.json
+```
+
+## Why Build App With?
+
+- **Fast** — Go from zero to a running project in seconds
+- **Production-ready** — Security best practices, proper project structure, and sensible defaults built in
+- **Flexible** — 5 frameworks, 4 presets, 30+ configurable features — pick exactly what you need
+- **Secure** — Path traversal prevention, command injection guards, and secret generation for backend projects
+- **Current** — Uses latest stable versions of all dependencies
+
+## Contributing
+
+Contributions are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
+## License
+
+MIT — see [LICENSE](LICENSE) for details.
+
+## Support
+
+- Issues: [GitHub Issues](https://github.com/imnayakshubham/build-app-with/issues)
+- Discussions: [GitHub Discussions](https://github.com/imnayakshubham/build-app-with/discussions)
