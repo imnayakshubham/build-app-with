@@ -1,6 +1,6 @@
 {
   "name": "build-app-with",
-  "version": "2.0.7",
+  "version": "2.0.8",
   "description": "🚀 Interactive CLI tool to quickly create modern web applications. Use with 'npx build-app-with my-app' or install globally. Choose from React (Next.js/Vite), Node.js backends (Express/Fastify), with built-in TypeScript, authentication, databases, and more.",
   "main": "index.js",
   "type": "module",
